@@ -1,0 +1,1150 @@
+# Worked example project spanning all four CEET areas:
+#   TiO2 photocatalyst (areas 3 + 4) -> characterisation (XRD, SEM, BET)
+#   -> photocatalytic removal of pharmaceuticals from WWTP effluent (area 2)
+#   -> LC-MS/MS quantification (area 2) -> energy monitoring of the UV reactor (area 1)
+#
+# Every record is created from a template of the structure model: the `values` are
+# checked offline against the template fields (types, units, options, required flags)
+# exactly as the Kadi4Mat server would check them. Links use the PROV-O vocabulary.
+# All data files are SYNTHETIC (data/demo/make_demo_data.py).
+#
+# PLACEHOLDERS: "PROJECT" stands for the project acronym and must be replaced before a real
+# deployment. Kadi identifiers may only contain a-z 0-9 - _, so the same placeholder appears
+# in lower case in identifiers ("proj-project"); replace it there as well.
+# "SCIENTIST_NAME" stands for the person responsible / performing / evaluating.
+schema_version: 1
+
+collections:
+  - identifier: proj-project
+    title: PROJECT
+    description: Project collection of PROJECT; the cover record `proj-project` carries the project metadata. Replace PROJECT (and the identifier proj-project) with the project acronym.
+    parent: projects
+    record_template: tmpl-experiment
+    tags: [project, photocatalysis, pharmaceuticals]
+
+records:
+
+  # ============================================================ project cover record
+  - identifier: proj-project
+    template: tmpl-project
+    title: "PROJECT – project cover record (photocatalytic removal of pharmaceuticals from WWTP effluent)"
+    description: |
+      Demonstration project of the CEET laboratory model. Sol-gel TiO2 photocatalysts are synthesised and
+      characterised, tested for the degradation of pharmaceuticals in real WWTP effluent and evaluated for
+      energy demand. **All data in this demo are synthetic.**
+    collections: [proj-project]
+    values:
+      acronym: PROJECT
+      funding:
+        funder: TA CR
+        programme: SIGMA
+        grant_number: PROJECT grant number (demo)
+        start_date: 2026-01-01
+        end_date: 2028-12-31
+      people:
+        principal_investigator: SCIENTIST_NAME
+        data_steward: Tomas Heryan
+        contact_email: tomas.heryan@vsb.cz
+      scientific_areas:
+        - 3 Environmental Nanotechnology
+        - 2 Applied Chemistry – Waste, Water, Air
+        - 4 New Functional Materials
+        - 1 Environmental Electricity & Engineering
+      data_management:
+        dmp_reference: https://example.org/dmp/PROJECT (demo)
+        repository: Zenodo
+        default_license: CC-BY-4.0
+        confidentiality: internal
+      zenodo_community: ceet-vsb-tuo
+      keywords: [photocatalysis, TiO2, pharmaceuticals, wastewater, LC-MS/MS, energy efficiency]
+
+  # ============================================================ instruments (devices)
+  - identifier: inst-xrd-rigaku-miniflex-01
+    template: tmpl-instrument
+    title: X-ray diffraction – Rigaku MiniFlex 600 (XRD-01)
+    description: Benchtop powder diffractometer, Cu Kα, D/teX Ultra detector.
+    values:
+      internal_label: XRD-01
+      technique: X-ray diffraction
+      technique_term: http://purl.obolibrary.org/obo/CHMO_0000156
+      measured_quantities: [diffraction angle 2θ, diffracted intensity]
+      manufacturer: Rigaku
+      model: MiniFlex 600
+      serial_number: MF6-2019-0471
+      inventory_number: VSB-CEET-IM-002311
+      year_of_manufacture: 2019
+      commissioning_date: 2019-11-04
+      status: in service
+      responsible_person: SCIENTIST_NAME
+      contact_email: xrd-lab@vsb.cz
+      location: {building: CPIT TL3, room: "112"}
+      calibration:
+        requires_calibration: true
+        last_calibration_date: 2026-02-10
+        calibration_interval: 12
+        calibration_certificate: NIST SRM 640f Si standard, internal record XRD-CAL-2026-01
+        calibrated_by: SCIENTIST_NAME
+      maintenance:
+        last_maintenance_date: 2026-02-10
+        maintenance_interval: 12
+        service_contract: Rigaku Europe SE – annual service
+      accredited_use: false
+      software: {name: SmartLab Studio II, version: 4.4.241, data_format: .ras / .xy}
+      specifications:
+        measurement_range: 3–145° 2θ
+        resolution: 0.02° step
+      documentation:
+        manual_reference: \\ceet-fs\manuals\xrd\MiniFlex600_user_manual.pdf
+        sop_identifier: meth-xrd-powder-phase-v02
+
+  - identifier: inst-sem-tescan-vega-01
+    template: tmpl-instrument
+    title: Scanning electron microscopy – TESCAN VEGA3 with EDS (SEM-01)
+    description: Tungsten-filament SEM with Oxford Instruments EDS detector.
+    values:
+      internal_label: SEM-01
+      technique: Scanning electron microscopy
+      technique_term: http://purl.obolibrary.org/obo/CHMO_0000073
+      measured_quantities: [secondary electron image, backscattered electron image, EDS spectrum]
+      manufacturer: TESCAN
+      model: VEGA3 SBU
+      serial_number: VG3-2017-1182
+      inventory_number: VSB-CEET-IM-001904
+      year_of_manufacture: 2017
+      status: in service
+      responsible_person: SCIENTIST_NAME
+      location: {building: CPIT TL3, room: "018"}
+      calibration:
+        requires_calibration: true
+        last_calibration_date: 2025-11-20
+        calibration_interval: 24
+        calibration_certificate: magnification standard MRS-4, internal record SEM-CAL-2025-02
+      maintenance: {last_maintenance_date: 2025-11-20, maintenance_interval: 12}
+      software: {name: VegaTC, version: 4.2.29, data_format: .tif (16-bit) / .spx}
+
+  - identifier: inst-bet-micromeritics-3flex-01
+    template: tmpl-instrument
+    title: Gas physisorption – Micromeritics 3Flex (BET-01)
+    description: Three-station physisorption analyser for N2/Ar/CO2 isotherms.
+    values:
+      internal_label: BET-01
+      technique: Gas physisorption (BET)
+      measured_quantities: [adsorbed quantity vs relative pressure]
+      manufacturer: Micromeritics
+      model: 3Flex 3500
+      serial_number: 3F-2021-0233
+      inventory_number: VSB-CEET-IM-003870
+      year_of_manufacture: 2021
+      status: in service
+      responsible_person: SCIENTIST_NAME
+      location: {building: CPIT TL3, room: "210"}
+      calibration:
+        requires_calibration: true
+        last_calibration_date: 2026-01-15
+        calibration_interval: 12
+        calibration_certificate: alumina reference material lot 2026-A
+      software: {name: MicroActive, version: "7.02", data_format: .smp / .xls}
+
+  - identifier: inst-lcms-sciex-qtrap6500-01
+    template: tmpl-instrument
+    title: LC-MS/MS – SCIEX QTRAP 6500+ with ExionLC (LCMS-01)
+    description: Triple quadrupole / linear ion trap mass spectrometer coupled to an ExionLC AD UHPLC.
+    values:
+      internal_label: LCMS-01
+      technique: Liquid chromatography – tandem mass spectrometry
+      technique_term: http://purl.obolibrary.org/obo/CHMO_0000524
+      measured_quantities: [MRM ion intensities, retention time, analyte concentration]
+      manufacturer: SCIEX
+      model: QTRAP 6500+ / ExionLC AD
+      serial_number: AV2318G
+      inventory_number: VSB-CEET-IM-003201
+      year_of_manufacture: 2020
+      status: in service
+      responsible_person: SCIENTIST_NAME
+      contact_email: lcms-lab@vsb.cz
+      location: {building: CPIT TL3, room: "214"}
+      calibration:
+        requires_calibration: true
+        last_calibration_date: 2026-07-01
+        calibration_interval: 6
+        calibration_certificate: PPG mass calibration 2026-07-01, SCIEX service report
+        calibrated_by: SCIEX service
+      maintenance: {last_maintenance_date: 2026-07-01, maintenance_interval: 6, service_contract: SCIEX Czech – full service}
+      accredited_use: true
+      software: {name: SCIEX OS, version: 3.4.0, data_format: .wiff2}
+      specifications: {measurement_range: 5–2000 m/z, resolution: unit resolution (0.7 FWHM)}
+
+  - identifier: inst-power-analyzer-yokogawa-wt310e-01
+    template: tmpl-instrument
+    title: Power analysis – Yokogawa WT310E (PWR-01)
+    description: Single-phase digital power meter for consumption and power quality basics.
+    values:
+      internal_label: PWR-01
+      technique: Electrical power analysis
+      measured_quantities: [voltage RMS, current RMS, active power, power factor, energy, THD]
+      manufacturer: Yokogawa
+      model: WT310E
+      serial_number: 91N802345
+      inventory_number: VSB-CEET-IM-004107
+      year_of_manufacture: 2022
+      status: in service
+      responsible_person: SCIENTIST_NAME
+      location: {building: CPIT TL3, room: "305"}
+      calibration:
+        requires_calibration: true
+        last_calibration_date: 2026-03-03
+        calibration_interval: 12
+        calibration_certificate: CMI calibration certificate 8012-KL-C0345-26
+        calibrated_by: Czech Metrology Institute
+      accredited_use: false
+      software: {name: WTViewerE, version: "3.08", data_format: .csv}
+      specifications: {measurement_range: "15–600 V, 5 mA–20 A, DC and 0.5 Hz–100 kHz", uncertainty: 0.1}
+
+  # ============================================================ equipment
+  - identifier: eqp-furnace-nabertherm-l9-01
+    template: tmpl-equipment
+    title: Furnace – Nabertherm L 9/11 (FURN-02)
+    description: Muffle furnace for calcination up to 1100 °C.
+    values:
+      internal_label: FURN-02
+      equipment_class: furnace / oven
+      manufacturer: Nabertherm
+      model: L 9/11 with P330 controller
+      serial_number: 2018-L9-7721
+      inventory_number: VSB-CEET-IM-002015
+      status: in service
+      responsible_person: SCIENTIST_NAME
+      location: {building: CPIT TL3, room: "209"}
+      calibration: {requires_calibration: true, last_calibration_date: 2026-04-08, calibration_interval: 12, calibration_certificate: thermocouple check FURN-CAL-2026-02}
+      capabilities: {max_temperature: 1100, electrical_power: 3.0, controlled_atmosphere: false}
+      consumables: [alumina crucibles 50 mL]
+
+  - identifier: eqp-photoreactor-uva-01
+    template: tmpl-equipment
+    title: Photoreactor – UV-A LED batch reactor (PHR-01)
+    description: 1 L jacketed glass batch photoreactor with 365 nm LED array (nominal 90 W electrical) and magnetic stirring.
+    values:
+      internal_label: PHR-01
+      equipment_class: photoreactor
+      manufacturer: CEET workshop / Peschl Ultraviolet
+      model: 1 L batch, 365 nm LED array
+      inventory_number: VSB-CEET-IM-004420
+      status: in service
+      responsible_person: SCIENTIST_NAME
+      location: {building: CPIT TL3, room: "214"}
+      calibration: {requires_calibration: true, last_calibration_date: 2026-06-15, calibration_interval: 6, calibration_certificate: radiometer check PHR-CAL-2026-01 (UV-A irradiance)}
+      capabilities: {working_volume: 1.0, max_temperature: 60, electrical_power: 0.1, controlled_atmosphere: false}
+      consumables: [quartz cooling coil, PTFE stirring bar]
+
+  - identifier: eqp-spe-manifold-supelco-01
+    template: tmpl-equipment
+    title: SPE manifold – Supelco Visiprep DL 12-port (SPE-01)
+    description: Vacuum manifold for solid-phase extraction.
+    values:
+      internal_label: SPE-01
+      equipment_class: SPE manifold
+      manufacturer: Supelco
+      model: Visiprep DL 12-port
+      serial_number: VP-2021-0457
+      inventory_number: VSB-CEET-IM-004512
+      status: in service
+      responsible_person: SCIENTIST_NAME
+      location: {building: CPIT TL3, room: "214"}
+      calibration: {requires_calibration: false}
+      consumables: [disposable liners, Oasis HLB 6 cc cartridges]
+
+  - identifier: eqp-drying-oven-memmert-01
+    template: tmpl-equipment
+    title: Drying oven – Memmert UF110 (OVEN-03)
+    description: Forced-convection drying oven.
+    values:
+      internal_label: OVEN-03
+      equipment_class: drying cabinet
+      manufacturer: Memmert
+      model: UF110
+      serial_number: UF110-2020-3341
+      inventory_number: VSB-CEET-IM-003355
+      status: in service
+      responsible_person: SCIENTIST_NAME
+      location: {building: CPIT TL3, room: "209"}
+      calibration: {requires_calibration: true, last_calibration_date: 2026-04-08, calibration_interval: 12}
+      capabilities: {max_temperature: 300, working_volume: 108, electrical_power: 1.6}
+
+  # ============================================================ materials
+  - identifier: mat-ttip-sigma-205273-lot-mkcq1234
+    template: tmpl-material
+    title: Titanium(IV) isopropoxide 97 % – Sigma-Aldrich lot MKCQ1234
+    values:
+      material_name: Titanium(IV) isopropoxide
+      material_class: precursor
+      chemical_formula: Ti[OCH(CH3)2]4
+      cas_number: 546-68-9
+      supplier: Sigma-Aldrich
+      product_number: "205273"
+      lot_number: MKCQ1234
+      purity: 97
+      grade: technical
+      form: liquid
+      received_date: 2026-03-02
+      expiry_date: 2028-03-01
+      storage_conditions: inert atmosphere
+      hazards: [H226 flammable liquid and vapour, H319 causes serious eye irritation]
+      safety_data_sheet: https://www.sigmaaldrich.com/CZ/en/sds/aldrich/205273
+
+  - identifier: mat-tio2-p25-evonik-lot-4169022498
+    template: tmpl-material
+    title: Aeroxide TiO2 P25 – Evonik lot 4169022498 (reference photocatalyst)
+    values:
+      material_name: Titanium dioxide Aeroxide P25
+      material_class: commercial material
+      chemical_formula: TiO2
+      cas_number: 13463-67-7
+      supplier: Evonik
+      product_number: AEROXIDE TiO2 P 25
+      lot_number: "4169022498"
+      purity: 99.5
+      grade: technical
+      form: powder
+      received_date: 2025-09-15
+      storage_conditions: desiccator
+      hazards: [nanomaterial – avoid dust inhalation]
+
+  - identifier: mat-diclofenac-sodium-std-lot-lrad5577
+    template: tmpl-material
+    title: Diclofenac sodium analytical standard – Sigma-Aldrich lot LRAD5577
+    values:
+      material_name: Diclofenac sodium salt
+      material_class: calibration standard
+      chemical_formula: C14H10Cl2NNaO2
+      cas_number: 15307-79-6
+      supplier: Sigma-Aldrich
+      product_number: D6899
+      lot_number: LRAD5577
+      purity: 99.4
+      grade: analytical
+      form: powder
+      received_date: 2026-01-20
+      expiry_date: 2029-01-31
+      storage_conditions: refrigerated 2–8 °C
+      certificate_reference: CoA LRAD5577
+      certified_values:
+        - {property: purity (HPLC), value: 99.4, unit: "%", uncertainty: 0.3}
+
+  - identifier: mat-methanol-lcms-honeywell-lot-k2341
+    template: tmpl-material
+    title: Methanol LC-MS grade – Honeywell lot K2341
+    values:
+      material_name: Methanol
+      material_class: solvent
+      chemical_formula: CH3OH
+      cas_number: 67-56-1
+      supplier: Honeywell Riedel-de Haën
+      product_number: "34966"
+      lot_number: K2341
+      purity: 99.9
+      grade: LC-MS
+      form: liquid
+      received_date: 2026-05-11
+      storage_conditions: room temperature
+      hazards: [H225, H301, H311, H331, H370]
+
+  - identifier: mat-oasis-hlb-6cc-lot-0123a45
+    template: tmpl-material
+    title: Oasis HLB 6 cc (200 mg) SPE cartridges – Waters lot 0123A45
+    values:
+      material_name: Oasis HLB 6 cc 200 mg SPE cartridge
+      material_class: consumable
+      supplier: Waters
+      product_number: WAT106202
+      lot_number: 0123A45
+      form: other
+      received_date: 2026-06-02
+      storage_conditions: room temperature
+
+  # ============================================================ methods
+  - identifier: meth-tio2-sol-gel-v02
+    template: tmpl-method
+    title: Sol-gel synthesis of TiO2 from titanium isopropoxide v02
+    description: Hydrolysis of TTIP in isopropanol/water, ageing 24 h, drying 80 °C, calcination 450 °C 3 h.
+    values:
+      method_class: synthesis protocol
+      version: v02
+      status: active
+      effective_from: 2026-02-01
+      author: SCIENTIST_NAME
+      approved_by: SCIENTIST_NAME
+      scope: Laboratory-scale (5 g) anatase TiO2 powders for photocatalysis.
+      analytes_or_quantities: [TiO2 anatase]
+      document: {file_name: SOP-SG-TIO2-v02.pdf}
+
+  - identifier: meth-xrd-powder-phase-v02
+    template: tmpl-method
+    title: Powder XRD phase analysis of oxide catalysts v02
+    values:
+      method_class: analytical method
+      version: v02
+      status: validated
+      effective_from: 2025-10-01
+      author: SCIENTIST_NAME
+      standard_reference: in-house, Rietveld refinement with ICDD PDF-4+
+      scope: Crystalline oxide powders, 10–80° 2θ, Cu Kα.
+      analytes_or_quantities: [phase composition, crystallite size]
+      performance: {measurement_range: 1–100 wt%, limit_of_quantification: ~1 wt% crystalline phase, expanded_uncertainty: 10}
+
+  - identifier: meth-photocat-batch-test-v01
+    template: tmpl-method
+    title: Batch photocatalytic degradation test of pharmaceuticals in WWTP effluent v01
+    values:
+      method_class: test procedure
+      version: v01
+      status: active
+      effective_from: 2026-05-01
+      author: SCIENTIST_NAME
+      scope: 1 L batch reactor, UV-A 365 nm, catalyst 0.5 g/L, 30 min dark phase, 120 min irradiation, aliquots at 0/60/120 min.
+      analytes_or_quantities: [diclofenac, carbamazepine, sulfamethoxazole, ibuprofen]
+
+  - identifier: meth-spe-pharma-v03
+    template: tmpl-method
+    title: SPE enrichment of pharmaceuticals from water (Oasis HLB) v03
+    values:
+      method_class: sample preparation protocol
+      version: v03
+      status: validated
+      effective_from: 2026-03-15
+      author: SCIENTIST_NAME
+      standard_reference: adapted from EPA 1694
+      scope: 100–500 mL water samples, pH 7, enrichment factor up to 1000.
+      analytes_or_quantities: [diclofenac, carbamazepine, sulfamethoxazole, ibuprofen]
+      performance: {measurement_range: 10 ng/L – 10 µg/L, limit_of_quantification: 50 ng/L, expanded_uncertainty: 25}
+
+  - identifier: meth-lcms-pharma-ww-v03
+    template: tmpl-method
+    title: LC-MS/MS determination of pharmaceuticals in wastewater v03
+    values:
+      method_class: analytical method
+      version: v03
+      status: validated
+      effective_from: 2026-03-15
+      author: SCIENTIST_NAME
+      approved_by: quality manager
+      standard_reference: CSN EN ISO 17025 in-house method; isotope dilution
+      scope: Wastewater influent/effluent and surface water after SPE.
+      analytes_or_quantities: [diclofenac, carbamazepine, sulfamethoxazole, ibuprofen]
+      performance: {measurement_range: 0.05–20 µg/L (after SPE), limit_of_quantification: 0.05 µg/L, expanded_uncertainty: 25}
+
+  - identifier: meth-energy-monitoring-v01
+    template: tmpl-method
+    title: Energy consumption monitoring of laboratory reactors v01
+    values:
+      method_class: test procedure
+      version: v01
+      status: active
+      effective_from: 2026-04-01
+      author: SCIENTIST_NAME
+      standard_reference: IEC 62301 (principles), 1 s logging with WT310E
+      scope: Single-phase laboratory devices up to 3 kW.
+      analytes_or_quantities: [active power, energy, power factor]
+
+  # ============================================================ samples
+  - identifier: smpl-tio2-sg-2026-001
+    template: tmpl-sample-nanomaterial
+    title: TIO2-SG-2026-001 – as-dried sol-gel TiO2 powder
+    collections: [proj-project]
+    values:
+      sample_id: TIO2-SG-2026-001
+      sample_class: synthesised material
+      matrix: TiO2 (amorphous / poorly crystalline, as dried)
+      nominal_composition: TiO2
+      form: powder
+      amount: 6.8
+      synthesis_identifier: prep-tio2-sg-2026-001
+      storage: {location: "room 209, desiccator D2", conditions: desiccator}
+      hazards: [nanomaterial – inhalation hazard]
+      lifecycle_status: consumed
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: prep-tio2-sg-2026-001, type: was_generated_by}
+
+  - identifier: smpl-tio2-sg-2026-001-c450
+    template: tmpl-sample-nanomaterial
+    title: TIO2-SG-2026-001-C450 – TiO2 calcined 450 °C / 3 h
+    collections: [proj-project, area-4-functional-materials]
+    values:
+      sample_id: TIO2-SG-2026-001-C450
+      sample_class: synthesised material
+      matrix: TiO2 anatase (calcined 450 °C)
+      nominal_composition: TiO2
+      form: powder
+      nominal_particle_size: 15
+      amount: 5.9
+      synthesis_identifier: prep-tio2-calc-2026-001
+      storage: {location: "room 209, desiccator D2", conditions: desiccator}
+      hazards: [nanomaterial – inhalation hazard]
+      lifecycle_status: under measurement
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: prep-tio2-calc-2026-001, type: was_generated_by}
+      - {to: smpl-tio2-sg-2026-001, type: was_derived_from}
+
+  - identifier: smpl-ww-ov-2026-08-03-eff
+    template: tmpl-sample-water
+    title: WW-OV-2026-08-03-EFF – secondary effluent, ČOV Ostrava
+    collections: [proj-project]
+    values:
+      sample_id: WW-OV-2026-08-03-EFF
+      sample_class: environmental – water
+      matrix: wastewater effluent
+      volume: 10000
+      origin:
+        site_name: ČOV Ostrava – secondary clarifier outlet
+        latitude: 49.8209
+        longitude: 18.2625
+        site_description: Municipal WWTP, outlet of the secondary clarifiers before discharge.
+      wastewater:
+        plant: ÚČOV Ostrava
+        treatment_stage: secondary effluent
+        population_equivalent: 638000
+        weather: dry weather
+      sampling:
+        sampled_at: 2026-08-03T06:30:00+02:00
+        sampled_by: SCIENTIST_NAME
+        sampling_method: 24 h time-proportional composite
+        sampling_standard: CSN ISO 5667-10
+        container: 2 × 5 L amber glass
+        preservation: cooled 4 °C, dark
+      field_parameters: {ph: 7.4, conductivity: 1180, temperature: 19.2, dissolved_oxygen: 5.1, turbidity: 3.8}
+      storage: {location: "room 214, fridge F1", temperature: 4, conditions: cooled, retention_until: 2026-09-03}
+      lifecycle_status: in preparation
+    links:
+      - {to: proj-project, type: part_of_project}
+
+  - identifier: smpl-photocat-r01-t000
+    template: tmpl-sample-water
+    title: PHOTOCAT-R01-T000 – reaction aliquot t = 0 min (after dark phase)
+    collections: [proj-project]
+    values:
+      sample_id: PHOTOCAT-R01-T000
+      sample_class: environmental – water
+      matrix: process water
+      volume: 50
+      sampling: {sampled_at: 2026-08-04T10:30:00+02:00, sampled_by: SCIENTIST_NAME, sampling_method: grab, sampling_standard: meth-photocat-batch-test-v01, container: 50 mL amber glass, preservation: "filtered 0.45 µm, cooled"}
+      storage: {location: "room 214, fridge F1", temperature: 4, conditions: cooled}
+      parent_sample: smpl-ww-ov-2026-08-03-eff
+      lifecycle_status: measured
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: exp-photocat-r01-2026-08-04, type: was_generated_by}
+      - {to: smpl-ww-ov-2026-08-03-eff, type: was_derived_from}
+
+  - identifier: smpl-photocat-r01-t060
+    template: tmpl-sample-water
+    title: PHOTOCAT-R01-T060 – reaction aliquot t = 60 min
+    collections: [proj-project]
+    values:
+      sample_id: PHOTOCAT-R01-T060
+      sample_class: environmental – water
+      matrix: process water
+      volume: 50
+      sampling: {sampled_at: 2026-08-04T11:30:00+02:00, sampled_by: SCIENTIST_NAME, sampling_method: grab, sampling_standard: meth-photocat-batch-test-v01, container: 50 mL amber glass, preservation: "filtered 0.45 µm, cooled"}
+      storage: {location: "room 214, fridge F1", temperature: 4, conditions: cooled}
+      parent_sample: smpl-ww-ov-2026-08-03-eff
+      lifecycle_status: measured
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: exp-photocat-r01-2026-08-04, type: was_generated_by}
+      - {to: smpl-ww-ov-2026-08-03-eff, type: was_derived_from}
+
+  - identifier: smpl-photocat-r01-t120
+    template: tmpl-sample-water
+    title: PHOTOCAT-R01-T120 – reaction aliquot t = 120 min
+    collections: [proj-project]
+    values:
+      sample_id: PHOTOCAT-R01-T120
+      sample_class: environmental – water
+      matrix: process water
+      volume: 50
+      sampling: {sampled_at: 2026-08-04T12:30:00+02:00, sampled_by: SCIENTIST_NAME, sampling_method: grab, sampling_standard: meth-photocat-batch-test-v01, container: 50 mL amber glass, preservation: "filtered 0.45 µm, cooled"}
+      storage: {location: "room 214, fridge F1", temperature: 4, conditions: cooled}
+      parent_sample: smpl-ww-ov-2026-08-03-eff
+      lifecycle_status: measured
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: exp-photocat-r01-2026-08-04, type: was_generated_by}
+      - {to: smpl-ww-ov-2026-08-03-eff, type: was_derived_from}
+
+  # ============================================================ sample preparations
+  - identifier: prep-tio2-sg-2026-001
+    template: tmpl-prep-nanomaterial-synthesis
+    title: Synthesis sol-gel – TiO2 – batch 2026-001
+    collections: [proj-project]
+    values:
+      preparation_class: synthesis
+      purpose: Photocatalyst batch for PROJECT runs R01–R03.
+      performed_by: SCIENTIST_NAME
+      started_at: 2026-07-21T09:00:00+02:00
+      ended_at: 2026-07-23T15:00:00+02:00
+      laboratory: CPIT TL3 / 209
+      status: completed
+      protocol: {method_identifier: meth-tio2-sol-gel-v02, version: v02}
+      input: {input_volume: 25.0}
+      parameters: {temperature: 25, duration: 120, ph: 2.5, stirring_speed: 500, atmosphere: air, solvent: isopropanol / water}
+      reagents:
+        - {name: Titanium(IV) isopropoxide, material_record: mat-ttip-sigma-205273-lot-mkcq1234, lot_number: MKCQ1234, volume: 25.0}
+        - {name: 2-propanol p.a., lot_number: SZBF2201, volume: 100.0}
+        - {name: Nitric acid 0.1 M, volume: 10.0, concentration: 0.1}
+      equipment_identifiers: [eqp-drying-oven-memmert-01]
+      output: {output_sample_identifier: smpl-tio2-sg-2026-001, output_amount: 6.8, yield: 93}
+      replicates: 1
+      synthesis:
+        route: sol-gel
+        target_material: TiO2 anatase
+        reaction: {temperature: 25, time: 2, ph: 2.5, stirring_speed: 500, atmosphere: air, vessel: 250 mL round-bottom flask}
+        ageing_time: 24
+        washing: 3 × 50 mL ethanol, centrifugation 4000 rpm 10 min
+        drying: {method: oven, temperature: 80, time: 12}
+        yield_mass: 6.8
+        appearance: white, free-flowing powder
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: mat-ttip-sigma-205273-lot-mkcq1234, type: used}
+      - {to: eqp-drying-oven-memmert-01, type: used}
+      - {to: meth-tio2-sol-gel-v02, type: follows_plan}
+
+  - identifier: prep-tio2-calc-2026-001
+    template: tmpl-prep-material-processing
+    title: Processing heat treatment – TiO2 calcination 450 °C – batch 2026-001
+    collections: [proj-project]
+    values:
+      preparation_class: calcination / annealing
+      purpose: Crystallisation of as-dried TiO2 to anatase.
+      performed_by: SCIENTIST_NAME
+      started_at: 2026-07-24T08:00:00+02:00
+      ended_at: 2026-07-24T16:30:00+02:00
+      laboratory: CPIT TL3 / 209
+      status: completed
+      protocol: {method_identifier: meth-tio2-sol-gel-v02, version: v02}
+      input: {sample_identifiers: [smpl-tio2-sg-2026-001], input_amount: 6.8}
+      parameters: {temperature: 450, duration: 180, atmosphere: air}
+      equipment_identifiers: [eqp-furnace-nabertherm-l9-01]
+      output: {output_sample_identifier: smpl-tio2-sg-2026-001-c450, output_amount: 5.9, yield: 86.8}
+      processing:
+        route: heat treatment only
+        target_material: TiO2 anatase
+        thermal_treatment: {furnace: eqp-furnace-nabertherm-l9-01, temperature: 450, heating_rate: 5, dwell_time: 3, atmosphere: air, cooling: furnace cooling}
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: smpl-tio2-sg-2026-001, type: used}
+      - {to: eqp-furnace-nabertherm-l9-01, type: used}
+      - {to: meth-tio2-sol-gel-v02, type: follows_plan}
+      - {to: prep-tio2-sg-2026-001, type: was_informed_by}
+
+  - identifier: prep-spe-photocat-r01-2026-08-04
+    template: tmpl-prep-spe-extraction
+    title: SPE extraction of PHOTOCAT-R01 aliquots for LC-MS/MS pharmaceuticals
+    collections: [proj-project]
+    values:
+      preparation_class: extraction
+      purpose: LC-MS/MS pharmaceuticals (meth-lcms-pharma-ww-v03)
+      performed_by: SCIENTIST_NAME
+      started_at: 2026-08-04T14:00:00+02:00
+      ended_at: 2026-08-04T17:30:00+02:00
+      laboratory: CPIT TL3 / 214
+      status: completed
+      protocol: {method_identifier: meth-spe-pharma-v03, version: v03}
+      input: {sample_identifiers: [smpl-photocat-r01-t000, smpl-photocat-r01-t060, smpl-photocat-r01-t120], input_volume: 50.0}
+      parameters: {temperature: 22, ph: 7.0, solvent: methanol}
+      reagents:
+        - {name: Methanol LC-MS grade, material_record: mat-methanol-lcms-honeywell-lot-k2341, lot_number: K2341, volume: 30.0}
+        - {name: Oasis HLB 6 cc 200 mg cartridges, material_record: mat-oasis-hlb-6cc-lot-0123a45, lot_number: 0123A45}
+      equipment_identifiers: [eqp-spe-manifold-supelco-01]
+      output: {output_volume: 0.5, concentration_factor: 100}
+      blank_included: true
+      replicates: 1
+      spe:
+        sorbent: {sorbent_type: HLB (hydrophilic-lipophilic balanced), product: Oasis HLB 6 cc, sorbent_mass: 200, lot_number: 0123A45}
+        sample_volume: 50
+        sample_ph: 7.0
+        internal_standard_spike: diclofenac-d4, carbamazepine-d10, sulfamethoxazole-d4, ibuprofen-d3 – 50 ng each
+        conditioning: 5 mL methanol, 5 mL water
+        loading_flow: 5
+        washing: 5 mL water
+        drying: nitrogen, 20 min
+        elution_steps:
+          - {solvent: methanol, volume: 4.0}
+          - {solvent: methanol / acetone 1:1 (v/v), volume: 4.0}
+        evaporation: {method: nitrogen stream, temperature: 35}
+        reconstitution: {solvent: methanol / water 10:90, volume: 500}
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: smpl-photocat-r01-t000, type: used}
+      - {to: smpl-photocat-r01-t060, type: used}
+      - {to: smpl-photocat-r01-t120, type: used}
+      - {to: mat-methanol-lcms-honeywell-lot-k2341, type: used}
+      - {to: mat-oasis-hlb-6cc-lot-0123a45, type: used}
+      - {to: eqp-spe-manifold-supelco-01, type: used}
+      - {to: meth-spe-pharma-v03, type: follows_plan}
+      - {to: exp-photocat-r01-2026-08-04, type: was_informed_by}
+
+  # ============================================================ experiments
+  - identifier: exp-xrd-tio2-c450-2026-07-27
+    template: tmpl-exp-xrd
+    title: XRD – TIO2-SG-2026-001-C450 – 2026-07-27
+    collections: [proj-project]
+    values:
+      experiment_class: characterisation
+      technique: X-ray diffraction
+      technique_term: http://purl.obolibrary.org/obo/CHMO_0000156
+      performed_by: SCIENTIST_NAME
+      started_at: 2026-07-27T09:15:00+02:00
+      ended_at: 2026-07-27T10:05:00+02:00
+      laboratory: CPIT TL3 / 112
+      status: completed
+      instrument_identifier: inst-xrd-rigaku-miniflex-01
+      sample_identifiers: [smpl-tio2-sg-2026-001-c450]
+      method: {method_identifier: meth-xrd-powder-phase-v02, version: v02}
+      instrument_settings: {mode: Bragg-Brentano, method_file: powder_10-80_0.02_fast.ras, software: SmartLab Studio II 4.4.241}
+      ambient: {temperature: 22.5, relative_humidity: 41}
+      sequence: {sequence_name: XRD-2026-07-27, position: 3, replicates: 1}
+      data: {raw_data_identifier: raw-xrd-tio2-c450-2026-07-27, raw_data_format: .ras / .xy, data_volume: 0.05}
+      qc_status: passed
+      qc_checked_by: SCIENTIST_NAME
+      xrd:
+        geometry: Bragg-Brentano
+        radiation: Cu Kα
+        tube_voltage: 40
+        tube_current: 15
+        monochromator_or_filter: Ni Kβ filter
+        detector: D/teX Ultra 1D
+        scan: {two_theta_start: 10, two_theta_end: 80, step_size: 0.02, time_per_step: 1.0, scan_mode: continuous}
+        sample_holder: zero-background Si holder
+        sample_rotation: false
+        phase_analysis:
+          software: SmartLab Studio II 4.4.241 / PDXL
+          database: ICDD PDF-4+
+          identified_phases: [anatase TiO2 (PDF 00-021-1272), rutile TiO2 (PDF 00-021-1276) traces]
+          quantification_method: Rietveld
+          rwp: 6.8
+          crystallite_size: 14.5
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: inst-xrd-rigaku-miniflex-01, type: measured_on}
+      - {to: smpl-tio2-sg-2026-001-c450, type: used}
+      - {to: meth-xrd-powder-phase-v02, type: follows_plan}
+
+  - identifier: exp-sem-tio2-c450-2026-07-28
+    template: tmpl-exp-electron-microscopy
+    title: SEM/EDS – TIO2-SG-2026-001-C450 – 2026-07-28
+    collections: [proj-project]
+    values:
+      experiment_class: characterisation
+      technique: Scanning electron microscopy with EDS
+      technique_term: http://purl.obolibrary.org/obo/CHMO_0000073
+      performed_by: SCIENTIST_NAME
+      started_at: 2026-07-28T13:00:00+02:00
+      ended_at: 2026-07-28T15:30:00+02:00
+      laboratory: CPIT TL3 / 018
+      status: completed
+      instrument_identifier: inst-sem-tescan-vega-01
+      sample_identifiers: [smpl-tio2-sg-2026-001-c450]
+      instrument_settings: {mode: "high vacuum, SE + BSE", software: VegaTC 4.2.29}
+      sequence: {sequence_name: SEM-2026-07-28, position: 1}
+      data: {raw_data_identifier: raw-sem-tio2-c450-2026-07-28, raw_data_format: .tif / .spx, data_volume: 180}
+      qc_status: passed
+      electron_microscopy:
+        microscope_type: SEM (tungsten)
+        accelerating_voltage: 20
+        beam_current: 0.3
+        working_distance: 10.2
+        vacuum_mode: high vacuum
+        detectors: [SE, BSE, EDS]
+        magnification_range: {min: 500, max: 50000}
+        coating: {material: Au/Pd, thickness: 5}
+        specimen_mounting: powder on carbon tape, aluminium stub
+        eds: {performed: true, live_time: 60, elements: [Ti, O, C], quantification: standardless, software: AZtec 6.0}
+        number_of_images: 24
+        scale_bar_calibrated: true
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: inst-sem-tescan-vega-01, type: measured_on}
+      - {to: smpl-tio2-sg-2026-001-c450, type: used}
+
+  - identifier: exp-bet-tio2-c450-2026-07-29
+    template: tmpl-exp-bet
+    title: BET – TIO2-SG-2026-001-C450 – 2026-07-29
+    collections: [proj-project]
+    values:
+      experiment_class: characterisation
+      technique: Nitrogen physisorption (BET)
+      performed_by: SCIENTIST_NAME
+      started_at: 2026-07-29T08:00:00+02:00
+      ended_at: 2026-07-30T06:00:00+02:00
+      laboratory: CPIT TL3 / 210
+      status: completed
+      instrument_identifier: inst-bet-micromeritics-3flex-01
+      sample_identifiers: [smpl-tio2-sg-2026-001-c450]
+      instrument_settings: {mode: full isotherm 0.01–0.99 p/p0, software: MicroActive 7.02}
+      data: {raw_data_identifier: raw-bet-tio2-c450-2026-07-29, raw_data_format: .smp, data_volume: 1}
+      qc_status: passed
+      bet:
+        adsorptive: N2 at 77 K
+        degassing: {temperature: 200, time: 6, mode: vacuum}
+        sample_mass: 112.4
+        relative_pressure_range_bet: 0.05–0.30
+        bet_surface_area: 58.3
+        bet_c_constant: 112
+        total_pore_volume: 0.214
+        mean_pore_diameter: 11.6
+        pore_size_model: BJH desorption
+        isotherm_type: IV(a)
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: inst-bet-micromeritics-3flex-01, type: measured_on}
+      - {to: smpl-tio2-sg-2026-001-c450, type: used}
+
+  - identifier: exp-photocat-r01-2026-08-04
+    template: tmpl-exp-photocatalytic-test
+    title: Photocatalytic test – TIO2-SG-2026-001-C450 / pharmaceuticals in WWTP effluent – run R01
+    collections: [proj-project, area-2-environmental-chemistry]
+    values:
+      experiment_class: performance test
+      technique: Batch photocatalytic degradation under UV-A
+      performed_by: SCIENTIST_NAME
+      started_at: 2026-08-04T10:00:00+02:00
+      ended_at: 2026-08-04T12:35:00+02:00
+      laboratory: CPIT TL3 / 214
+      status: completed
+      sample_identifiers: [smpl-tio2-sg-2026-001-c450, smpl-ww-ov-2026-08-03-eff]
+      method: {method_identifier: meth-photocat-batch-test-v01, version: v01}
+      instrument_settings: {mode: "1 L batch, 365 nm LED array at 100 %"}
+      ambient: {temperature: 23.1, relative_humidity: 45}
+      sequence: {sequence_name: PHOTOCAT-R01, position: 1, replicates: 1, qc_samples_included: true}
+      qc_status: passed
+      qc_notes: Dark control and photolysis control (no catalyst) run on 2026-08-05 as R01-DC and R01-PC.
+      treatment_test:
+        process: photocatalysis
+        reactor_volume: 1.0
+        water_matrix: real wastewater effluent
+        dosage: 0.5
+        contact_time: 150
+        ph_initial: 7.4
+        temperature: 25
+        stirring_speed: 400
+        sampling_times: [0, 60, 120]
+        target_pollutants: [diclofenac, carbamazepine, sulfamethoxazole, ibuprofen]
+        initial_concentration: 0.0018
+        removal_efficiency: 89
+      photocatalysis:
+        light_source: {type: UV-A LED, peak_wavelength: 365, electrical_power: 90, irradiance_at_sample: 4.2, distance_to_sample: 8}
+        catalyst_loading: 0.5
+        dark_adsorption_time: 30
+        irradiation_time: 120
+        degradation_efficiency: 89
+        apparent_rate_constant: 0.0184
+        half_life: 37.7
+        reference_catalyst: TiO2 P25 (run R02)
+        reuse_cycle: 1
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: smpl-tio2-sg-2026-001-c450, type: used}
+      - {to: smpl-ww-ov-2026-08-03-eff, type: used}
+      - {to: eqp-photoreactor-uva-01, type: used}
+      - {to: meth-photocat-batch-test-v01, type: follows_plan}
+
+  - identifier: exp-lcms-pharma-2026-08-05-s01
+    template: tmpl-exp-chromatography-ms
+    title: LC-MS/MS sequence – PHARMA-2026-08-05-S01 – 2026-08-05
+    collections: [proj-project]
+    values:
+      experiment_class: measurement
+      technique: LC-MS/MS (MRM, isotope dilution)
+      technique_term: http://purl.obolibrary.org/obo/CHMO_0000524
+      performed_by: SCIENTIST_NAME
+      started_at: 2026-08-05T09:00:00+02:00
+      ended_at: 2026-08-05T13:40:00+02:00
+      laboratory: CPIT TL3 / 214
+      status: completed
+      instrument_identifier: inst-lcms-sciex-qtrap6500-01
+      sample_identifiers: [smpl-photocat-r01-t000, smpl-photocat-r01-t060, smpl-photocat-r01-t120]
+      method: {method_identifier: meth-lcms-pharma-ww-v03, version: v03}
+      instrument_settings: {mode: "scheduled MRM, polarity switching", method_file: PHARMA_WW_v03.msm, software: SCIEX OS 3.4.0}
+      ambient: {temperature: 21.8}
+      sequence: {sequence_name: PHARMA-2026-08-05-S01, position: 1, replicates: 2, calibration_included: true, qc_samples_included: true}
+      data: {raw_data_identifier: raw-lcms-pharma-2026-08-05-s01, raw_data_format: .wiff2, data_volume: 850}
+      qc_status: passed
+      qc_checked_by: SCIENTIST_NAME
+      chromatography:
+        technique: LC-MS/MS
+        column: {name: Phenomenex Kinetex C18, dimensions: 100 × 2.1 mm, particle_or_film: 1.7, temperature: 40, serial_number: H21-123456}
+        mobile_phase: {phase_a: water + 0.1 % formic acid, phase_b: methanol + 0.1 % formic acid, gradient_program: "5 % B 0–1 min, to 95 % B at 8 min, hold 2 min, re-equilibrate 3 min", flow_rate: 0.35}
+        injection_volume: 10
+        ionisation: ESI polarity switching
+        acquisition_mode: MRM / SRM
+        calibration: {levels: 8, range: 0.05–20 µg/L, internal_standards: [diclofenac-d4, carbamazepine-d10, sulfamethoxazole-d4, ibuprofen-d3], r2_min: 0.996}
+        sequence_composition: {samples: 3, blanks: 2, qc_samples: 3}
+        analytes: [diclofenac, carbamazepine, sulfamethoxazole, ibuprofen]
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: inst-lcms-sciex-qtrap6500-01, type: measured_on}
+      - {to: smpl-photocat-r01-t000, type: used}
+      - {to: smpl-photocat-r01-t060, type: used}
+      - {to: smpl-photocat-r01-t120, type: used}
+      - {to: mat-diclofenac-sodium-std-lot-lrad5577, type: calibrated_with}
+      - {to: meth-lcms-pharma-ww-v03, type: follows_plan}
+      - {to: prep-spe-photocat-r01-2026-08-04, type: was_informed_by}
+
+  - identifier: exp-energy-photoreactor-r01-2026-08-04
+    template: tmpl-exp-energy-monitoring
+    title: Energy monitoring – photoreactor PHR-01 during run R01 – 2026-08-04
+    collections: [proj-project]
+    values:
+      experiment_class: monitoring campaign
+      technique: Electrical power and energy logging (1 s)
+      performed_by: SCIENTIST_NAME
+      started_at: 2026-08-04T10:00:00+02:00
+      ended_at: 2026-08-04T12:00:00+02:00
+      laboratory: CPIT TL3 / 214
+      status: completed
+      instrument_identifier: inst-power-analyzer-yokogawa-wt310e-01
+      method: {method_identifier: meth-energy-monitoring-v01, version: v01}
+      instrument_settings: {mode: "single-phase, auto range", software: WTViewerE 3.08}
+      data: {raw_data_identifier: raw-power-photoreactor-r01-2026-08-04, raw_data_format: .csv, data_volume: 0.2}
+      qc_status: passed
+      test_setup:
+        supply_voltage: 230
+        supply_frequency: 50
+        supply_type: grid
+        load_type: real appliance
+        sampling_rate: 1
+        measurement_duration: 120
+        measured_quantities: [voltage RMS, current RMS, active power, power factor, energy]
+        wiring: single-phase, direct current input
+      energy_monitoring:
+        monitored_item: Photoreactor PHR-01 (LED array + stirrer)
+        meter: inst-power-analyzer-yokogawa-wt310e-01
+        logging_interval: 1
+        duration: 2.0
+        energy_consumed: 0.185
+        average_power: 92.4
+        peak_power: 99.1
+        standby_power: 4.2
+        power_factor: 0.97
+        specific_energy: 0.185
+        specific_energy_basis: per 1 L of treated effluent per 2 h run
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: inst-power-analyzer-yokogawa-wt310e-01, type: measured_on}
+      - {to: eqp-photoreactor-uva-01, type: used}
+      - {to: meth-energy-monitoring-v01, type: follows_plan}
+      - {to: exp-photocat-r01-2026-08-04, type: was_informed_by}
+
+  # ============================================================ raw data
+  - identifier: raw-xrd-tio2-c450-2026-07-27
+    template: tmpl-raw-data
+    title: "Raw data: XRD TIO2-SG-2026-001-C450 – 2026-07-27"
+    collections: [proj-project, area-4-functional-materials]
+    files:
+      - {path: demo/xrd_tio2-sg-2026-001-c450.xy, description: Exported 2θ / intensity pattern (synthetic demo data)., mimetype: text/csv}
+    values:
+      data_class: diffractograms
+      experiment_identifier: exp-xrd-tio2-c450-2026-07-27
+      acquired_at: 2026-07-27T09:15:00+02:00
+      acquisition_software: SmartLab Studio II 4.4.241
+      native_format: .ras (exported to .xy)
+      processing_level: converted (open format)
+      total_size: 0.04
+      files: auto
+      access: {access_level: internal, retention_until: 2036-12-31, storage_location: \\ceet-fs\xrd\2026\07}
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: exp-xrd-tio2-c450-2026-07-27, type: was_generated_by}
+
+  - identifier: raw-sem-tio2-c450-2026-07-28
+    template: tmpl-raw-data
+    title: "Raw data: SEM/EDS TIO2-SG-2026-001-C450 – 2026-07-28"
+    collections: [proj-project, area-4-functional-materials]
+    values:
+      data_class: images / micrographs
+      experiment_identifier: exp-sem-tio2-c450-2026-07-28
+      acquired_at: 2026-07-28T13:00:00+02:00
+      acquisition_software: VegaTC 4.2.29 / AZtec 6.0
+      native_format: .tif / .spx
+      processing_level: raw
+      total_size: 180
+      access: {access_level: internal, storage_location: \\ceet-fs\sem\2026\07\TIO2-SG-2026-001-C450}
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: exp-sem-tio2-c450-2026-07-28, type: was_generated_by}
+
+  - identifier: raw-bet-tio2-c450-2026-07-29
+    template: tmpl-raw-data
+    title: "Raw data: BET TIO2-SG-2026-001-C450 – 2026-07-29"
+    collections: [proj-project, area-3-nanotechnology]
+    files:
+      - {path: demo/bet_tio2-sg-2026-001-c450_report.txt, description: Instrument report (synthetic demo data)., mimetype: text/plain}
+    values:
+      data_class: instrument raw data
+      experiment_identifier: exp-bet-tio2-c450-2026-07-29
+      acquired_at: 2026-07-29T08:00:00+02:00
+      acquisition_software: MicroActive 7.02
+      native_format: .smp
+      processing_level: raw
+      files: auto
+      access: {access_level: internal}
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: exp-bet-tio2-c450-2026-07-29, type: was_generated_by}
+
+  - identifier: raw-lcms-pharma-2026-08-05-s01
+    template: tmpl-raw-data
+    title: "Raw data: LC-MS/MS PHARMA-2026-08-05-S01"
+    collections: [proj-project, area-2-environmental-chemistry]
+    files:
+      - {path: demo/lcms_pharma_2026-08-05_s01_results.csv, description: Quantitation export of the sequence (synthetic demo data)., mimetype: text/csv}
+    values:
+      data_class: chromatograms
+      experiment_identifier: exp-lcms-pharma-2026-08-05-s01
+      acquired_at: 2026-08-05T09:00:00+02:00
+      acquisition_software: SCIEX OS 3.4.0
+      native_format: .wiff2 (quantitation export .csv attached)
+      processing_level: converted (open format)
+      total_size: 850
+      files: auto
+      access: {access_level: internal, retention_until: 2036-12-31, storage_location: \\ceet-fs\lcms\2026\08\PHARMA-2026-08-05-S01}
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: exp-lcms-pharma-2026-08-05-s01, type: was_generated_by}
+
+  - identifier: raw-power-photoreactor-r01-2026-08-04
+    template: tmpl-raw-data
+    title: "Raw data: power log photoreactor PHR-01 run R01 – 2026-08-04"
+    collections: [proj-project, area-1-electrical-engineering]
+    files:
+      - {path: demo/power_photoreactor_r01_2026-08-05.csv, name: power_photoreactor_r01_2026-08-04.csv, description: 1 s log of voltage, current, active power and energy (synthetic demo data)., mimetype: text/csv}
+    values:
+      data_class: data logger time series
+      experiment_identifier: exp-energy-photoreactor-r01-2026-08-04
+      acquired_at: 2026-08-04T10:00:00+02:00
+      acquisition_software: WTViewerE 3.08
+      native_format: .csv
+      processing_level: raw
+      total_size: 0.2
+      files: auto
+      access: {access_level: internal}
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: exp-energy-photoreactor-r01-2026-08-04, type: was_generated_by}
+
+  # ============================================================ results
+  - identifier: res-xrd-phases-tio2-c450-2026-07-27
+    template: tmpl-result
+    title: "Result: XRD phase analysis TIO2-SG-2026-001-C450"
+    collections: [proj-project, area-4-functional-materials]
+    values:
+      result_class: phase / composition analysis
+      evaluated_by: SCIENTIST_NAME
+      evaluated_at: 2026-07-27T14:00:00+02:00
+      evaluation_software: PDXL 2.8 (Rietveld)
+      raw_data_identifier: raw-xrd-tio2-c450-2026-07-27
+      quantities:
+        - {name: anatase content, sample_id: TIO2-SG-2026-001-C450, value: 96.5, unit: wt%, uncertainty: 2.0}
+        - {name: rutile content, sample_id: TIO2-SG-2026-001-C450, value: 3.5, unit: wt%, uncertainty: 1.5}
+        - {name: "anatase crystallite size (Scherrer, 101)", sample_id: TIO2-SG-2026-001-C450, value: 14.5, unit: nm, uncertainty: 1.5}
+      summary: Predominantly anatase with minor rutile; crystallite size ~15 nm, consistent with 450 °C calcination.
+      qc_status: passed
+      qc_checked_by: SCIENTIST_NAME
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: raw-xrd-tio2-c450-2026-07-27, type: was_derived_from}
+      - {to: exp-xrd-tio2-c450-2026-07-27, type: was_generated_by}
+
+  - identifier: res-bet-tio2-c450-2026-07-30
+    template: tmpl-result
+    title: "Result: BET surface area and porosity TIO2-SG-2026-001-C450"
+    collections: [proj-project, area-3-nanotechnology]
+    values:
+      result_class: quantitative results table
+      evaluated_by: SCIENTIST_NAME
+      evaluated_at: 2026-07-30T09:00:00+02:00
+      evaluation_software: MicroActive 7.02
+      raw_data_identifier: raw-bet-tio2-c450-2026-07-29
+      quantities:
+        - {name: BET specific surface area, sample_id: TIO2-SG-2026-001-C450, value: 58.3, unit: m²/g, uncertainty: 1.2}
+        - {name: total pore volume, sample_id: TIO2-SG-2026-001-C450, value: 0.214, unit: cm³/g, uncertainty: 0.01}
+        - {name: BJH mean pore diameter, sample_id: TIO2-SG-2026-001-C450, value: 11.6, unit: nm, uncertainty: 0.8}
+      summary: Mesoporous anatase, type IV(a) isotherm.
+      qc_status: passed
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: raw-bet-tio2-c450-2026-07-29, type: was_derived_from}
+      - {to: exp-bet-tio2-c450-2026-07-29, type: was_generated_by}
+
+  - identifier: res-lcms-pharma-2026-08-05-s01
+    template: tmpl-result
+    title: "Result: pharmaceutical concentrations PHOTOCAT-R01 aliquots (LC-MS/MS)"
+    collections: [proj-project, area-2-environmental-chemistry]
+    values:
+      result_class: quantitative results table
+      evaluated_by: SCIENTIST_NAME
+      evaluated_at: 2026-08-05T15:30:00+02:00
+      evaluation_software: SCIEX OS 3.4.0 Analytics
+      raw_data_identifier: raw-lcms-pharma-2026-08-05-s01
+      quantities:
+        - {name: diclofenac, sample_id: PHOTOCAT-R01-T000, value: 1.80, unit: µg/L, uncertainty: 0.45, loq: 0.05}
+        - {name: diclofenac, sample_id: PHOTOCAT-R01-T060, value: 0.76, unit: µg/L, uncertainty: 0.19, loq: 0.05}
+        - {name: diclofenac, sample_id: PHOTOCAT-R01-T120, value: 0.20, unit: µg/L, uncertainty: 0.05, loq: 0.05}
+        - {name: carbamazepine, sample_id: PHOTOCAT-R01-T000, value: 0.95, unit: µg/L, uncertainty: 0.24, loq: 0.05}
+        - {name: carbamazepine, sample_id: PHOTOCAT-R01-T120, value: 0.10, unit: µg/L, uncertainty: 0.03, loq: 0.05}
+        - {name: sulfamethoxazole, sample_id: PHOTOCAT-R01-T120, value: null, unit: µg/L, below_loq: true, loq: 0.05}
+      summary: 89 % mean removal of the four pharmaceuticals after 120 min UV-A irradiation with 0.5 g/L catalyst.
+      qc_status: passed
+      qc_checked_by: SCIENTIST_NAME
+      qc_notes: Recoveries of labelled standards 84–108 %; blanks < LOQ.
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: raw-lcms-pharma-2026-08-05-s01, type: was_derived_from}
+      - {to: exp-lcms-pharma-2026-08-05-s01, type: was_generated_by}
+
+  - identifier: res-photocat-kinetics-r01-2026-08-05
+    template: tmpl-result
+    title: "Result: photocatalytic degradation kinetics run R01"
+    collections: [proj-project, area-3-nanotechnology]
+    files:
+      - {path: demo/photocat_r01_kinetics.csv, description: Pseudo-first-order fit per analyte (synthetic demo data)., mimetype: text/csv}
+    values:
+      result_class: kinetic evaluation
+      evaluated_by: SCIENTIST_NAME
+      evaluated_at: 2026-08-05T16:30:00+02:00
+      evaluation_software: Python 3.12 / SciPy 1.13 (curve_fit)
+      quantities:
+        - {name: apparent rate constant (diclofenac), sample_id: PHOTOCAT-R01, value: 0.0184, unit: 1/min, uncertainty: 0.0012}
+        - {name: half-life (diclofenac), sample_id: PHOTOCAT-R01, value: 37.7, unit: min, uncertainty: 2.5}
+        - {name: mean removal at 120 min, sample_id: PHOTOCAT-R01, value: 89, unit: "%", uncertainty: 4}
+      summary: Pseudo-first-order kinetics for all four pharmaceuticals; k_app 0.017–0.019 1/min.
+      qc_status: passed
+      report_file: photocat_r01_kinetics.csv
+      files: auto
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: res-lcms-pharma-2026-08-05-s01, type: was_derived_from}
+      - {to: exp-photocat-r01-2026-08-04, type: was_generated_by}
+
+  - identifier: res-energy-photoreactor-r01-2026-08-04
+    template: tmpl-result
+    title: "Result: energy balance of photoreactor PHR-01 run R01"
+    collections: [proj-project, area-1-electrical-engineering]
+    values:
+      result_class: performance indicators
+      evaluated_by: SCIENTIST_NAME
+      evaluated_at: 2026-08-04T14:00:00+02:00
+      evaluation_software: WTViewerE 3.08 / spreadsheet
+      raw_data_identifier: raw-power-photoreactor-r01-2026-08-04
+      quantities:
+        - {name: energy consumed per run, sample_id: PHOTOCAT-R01, value: 0.185, unit: kWh, uncertainty: 0.002}
+        - {name: "electrical energy per order (EEO, diclofenac)", sample_id: PHOTOCAT-R01, value: 193, unit: kWh/m³/order, uncertainty: 20}
+      summary: EEO of ~190 kWh/m³ per order for diclofenac at lab scale.
+      qc_status: passed with remarks
+      qc_notes: Stirrer consumption (~4 W) included in the lamp figure.
+    links:
+      - {to: proj-project, type: part_of_project}
+      - {to: raw-power-photoreactor-r01-2026-08-04, type: was_derived_from}
+      - {to: exp-energy-photoreactor-r01-2026-08-04, type: was_generated_by}

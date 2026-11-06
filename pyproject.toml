@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kadi-lab-manager"
+version = "1.0.1"
+description = "Reproducible, declarative deployment of laboratory metadata structures into Kadi4Mat (CEET, VSB-TUO)"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Tomas Heryan", email = "tomas.heryan@vsb.cz"}]
+maintainers = [{name = "Tomas Heryan", email = "tomas.heryan@vsb.cz"}]
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+dependencies = [
+    "kadi-apy>=0.51,<0.52",
+    "PyYAML>=6.0,<7",
+    "tzdata>=2024.1; sys_platform == 'win32'",
+]
+
+[project.urls]
+Homepage = "https://github.com/Tomas-Heryan/Kadi4Mat-e-Lab-Notebook"
+Kadi4Mat = "https://kadi.iam.kit.edu"
+
+[project.scripts]
+kadi-lab-manager = "kadi_lab_manager.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

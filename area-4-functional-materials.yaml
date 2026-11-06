@@ -1,0 +1,873 @@
+# Area 4 – Development of New Functional Materials
+# (XRD, electron microscopy, thermal analysis and spectroscopy blocks are shared with area 3.)
+schema_version: 1
+
+fieldsets:
+
+  solid_state_processing:
+    - key: processing
+      type: dict
+      description: Processing of a material (powder route, thermal treatment, forming).
+      fields:
+        - key: route
+          type: str
+          required: true
+          options: [solid-state reaction, mechanical alloying / ball milling, sintering, hot pressing / SPS, melting / casting, extrusion, 3D printing (FDM / SLA / binder jetting), electrospinning, sol-gel, coating / deposition, heat treatment only, other]
+          description: Processing route.
+        - key: target_material
+          type: str
+          required: true
+          description: Target material / composition.
+        - key: milling
+          type: dict
+          description: Milling / mechanical alloying step.
+          fields:
+            - key: mill_type
+              type: str
+              options: [planetary ball mill, vibratory mill, attritor, mortar grinder, jet mill, none]
+              description: Mill type (also an equipment `used` link).
+            - key: jar_material
+              type: str
+              options: [zirconia, tungsten carbide, hardened steel, agate, alumina, PTFE]
+              description: Jar material.
+            - key: ball_material
+              type: str
+              options: [zirconia, tungsten carbide, hardened steel, agate, alumina]
+              description: Ball material.
+            - key: ball_diameter
+              type: float
+              unit: mm
+              description: Ball diameter.
+            - key: ball_to_powder_ratio
+              type: float
+              range: {min: 0}
+              description: Ball-to-powder mass ratio.
+            - key: speed
+              type: int
+              unit: rpm
+              description: Rotation speed.
+            - key: time
+              type: float
+              unit: min
+              description: Effective milling time.
+              term: http://qudt.org/vocab/quantitykind/Time
+            - key: atmosphere
+              type: str
+              options: [air, argon, nitrogen, wet (ethanol), wet (water), other]
+              description: Milling atmosphere / medium.
+            - key: process_control_agent
+              type: str
+              description: Process control agent, if any.
+        - key: pressing
+          type: dict
+          description: Forming by pressing.
+          fields:
+            - key: method
+              type: str
+              options: [uniaxial, cold isostatic, hot pressing, spark plasma sintering, none]
+              description: Pressing method.
+            - key: pressure
+              type: float
+              unit: MPa
+              description: Pressing pressure.
+              term: http://qudt.org/vocab/quantitykind/Pressure
+            - key: die_diameter
+              type: float
+              unit: mm
+              description: Die diameter.
+            - key: dwell_time
+              type: float
+              unit: s
+              description: Dwell time at pressure.
+            - key: binder
+              type: str
+              description: Binder used, if any.
+        - key: thermal_treatment
+          type: dict
+          description: Sintering / annealing / calcination.
+          fields:
+            - key: furnace
+              type: str
+              description: Furnace used (also an equipment `used` link).
+            - key: temperature
+              type: float
+              unit: "°C"
+              description: Peak temperature.
+              term: http://qudt.org/vocab/quantitykind/Temperature
+            - key: heating_rate
+              type: float
+              unit: K/min
+              description: Heating rate.
+            - key: dwell_time
+              type: float
+              unit: h
+              description: Dwell time at peak temperature.
+            - key: atmosphere
+              type: str
+              options: [air, nitrogen, argon, hydrogen-argon, oxygen, vacuum, other]
+              description: Atmosphere.
+            - key: gas_flow
+              type: float
+              unit: mL/min
+              description: Gas flow.
+            - key: cooling
+              type: str
+              options: [furnace cooling, controlled rate, air quench, water quench, other]
+              description: Cooling regime.
+        - key: green_density
+          type: float
+          unit: "g/cm³"
+          description: Density before sintering.
+          term: http://qudt.org/vocab/quantitykind/Density
+        - key: final_density
+          type: float
+          unit: "g/cm³"
+          description: Density after processing.
+          term: http://qudt.org/vocab/quantitykind/Density
+        - key: relative_density
+          type: float
+          unit: "%"
+          range: {min: 0, max: 100}
+          description: Relative density (% of theoretical).
+        - key: shrinkage
+          type: float
+          unit: "%"
+          description: Linear shrinkage.
+        - key: specimen_geometry
+          type: str
+          description: Geometry of the produced specimen (pellet Ø10 × 2 mm, bar 3 × 4 × 45 mm, ...).
+
+  xrd_measurement:
+    - key: xrd
+      type: dict
+      description: X-ray diffraction measurement.
+      term: http://purl.obolibrary.org/obo/CHMO_0000156
+      fields:
+        - key: geometry
+          type: str
+          options: [Bragg-Brentano, parallel beam, grazing incidence (GIXRD), transmission / capillary, in-situ chamber]
+          description: Diffraction geometry.
+        - key: radiation
+          type: str
+          required: true
+          options: [Cu Kα, Co Kα, Mo Kα, Cr Kα, Ag Kα, synchrotron]
+          description: X-ray source.
+        - key: tube_voltage
+          type: float
+          unit: kV
+          description: Tube voltage.
+          term: http://qudt.org/vocab/quantitykind/Voltage
+        - key: tube_current
+          type: float
+          unit: mA
+          description: Tube current.
+          term: http://qudt.org/vocab/quantitykind/ElectricCurrent
+        - key: monochromator_or_filter
+          type: str
+          description: Monochromator / Kβ filter.
+        - key: detector
+          type: str
+          description: Detector type.
+        - key: scan
+          type: dict
+          description: Scan parameters.
+          fields:
+            - key: two_theta_start
+              type: float
+              unit: "°"
+              description: Start angle 2θ.
+            - key: two_theta_end
+              type: float
+              unit: "°"
+              description: End angle 2θ.
+            - key: step_size
+              type: float
+              unit: "°"
+              description: Step size.
+            - key: time_per_step
+              type: float
+              unit: s
+              description: Counting time per step.
+            - key: scan_mode
+              type: str
+              options: [continuous, step scan]
+              description: Scan mode.
+        - key: sample_holder
+          type: str
+          options: [standard holder, zero-background Si holder, capillary, thin film stage, heating stage, other]
+          description: Sample holder.
+        - key: sample_rotation
+          type: bool
+          description: Sample rotated during measurement.
+        - key: measurement_temperature
+          type: float
+          unit: "°C"
+          description: Sample temperature (non-ambient measurements).
+          term: http://qudt.org/vocab/quantitykind/Temperature
+        - key: phase_analysis
+          type: dict
+          description: Phase identification and quantification.
+          fields:
+            - key: software
+              type: str
+              description: Evaluation software and version.
+              term: https://schema.org/softwareVersion
+            - key: database
+              type: str
+              options: [ICDD PDF-4+, ICDD PDF-2, COD, ICSD, other]
+              description: Reference database.
+            - key: identified_phases
+              type: list
+              description: Identified phases (name, PDF card).
+              items:
+                - type: str
+            - key: quantification_method
+              type: str
+              options: [Rietveld, RIR, none]
+              description: Quantification method.
+            - key: rwp
+              type: float
+              unit: "%"
+              description: Weighted profile R-factor of the refinement.
+            - key: crystallite_size
+              type: float
+              unit: nm
+              description: Mean crystallite size (Scherrer / refinement).
+
+  electron_microscopy:
+    - key: electron_microscopy
+      type: dict
+      description: Electron microscopy session (SEM / TEM) with optional EDS.
+      fields:
+        - key: microscope_type
+          type: str
+          required: true
+          options: [SEM (tungsten), FE-SEM, ESEM, FIB-SEM, TEM, STEM, HR-TEM]
+          description: Microscope type.
+          term: http://purl.obolibrary.org/obo/CHMO_0000068
+        - key: accelerating_voltage
+          type: float
+          unit: kV
+          description: Accelerating voltage.
+          term: http://qudt.org/vocab/quantitykind/Voltage
+        - key: beam_current
+          type: float
+          unit: nA
+          description: Beam current.
+        - key: working_distance
+          type: float
+          unit: mm
+          description: Working distance.
+        - key: vacuum_mode
+          type: str
+          options: [high vacuum, low vacuum / variable pressure, environmental]
+          description: Vacuum mode.
+        - key: detectors
+          type: list
+          description: Detectors used.
+          items:
+            - type: str
+              options: [SE, BSE, In-lens / TLD, EDS, EBSD, STEM-BF, STEM-HAADF, CL, WDS]
+        - key: magnification_range
+          type: dict
+          description: Magnification range of the images.
+          fields:
+            - key: min
+              type: int
+              unit: x
+              description: Lowest magnification.
+            - key: max
+              type: int
+              unit: x
+              description: Highest magnification.
+        - key: coating
+          type: dict
+          description: Conductive coating of the specimen.
+          fields:
+            - key: material
+              type: str
+              options: [none, Au, Au/Pd, Pt, C, Cr, Ir]
+              description: Coating material.
+            - key: thickness
+              type: float
+              unit: nm
+              description: Coating thickness.
+        - key: specimen_mounting
+          type: str
+          description: Mounting (stub, carbon tape, grid type, embedding).
+        - key: eds
+          type: dict
+          description: Energy-dispersive X-ray spectroscopy.
+          fields:
+            - key: performed
+              type: bool
+              default: false
+              description: EDS performed.
+            - key: live_time
+              type: float
+              unit: s
+              description: Live time per spectrum.
+            - key: elements
+              type: list
+              description: Elements quantified.
+              items:
+                - type: str
+            - key: quantification
+              type: str
+              options: [standardless, standards-based, semi-quantitative, mapping only]
+              description: Quantification approach.
+            - key: software
+              type: str
+              description: EDS software and version.
+        - key: number_of_images
+          type: int
+          range: {min: 0}
+          description: Number of images acquired.
+        - key: scale_bar_calibrated
+          type: bool
+          description: Magnification calibration verified with a standard.
+
+  thermal_analysis:
+    - key: thermal_analysis
+      type: dict
+      description: Thermogravimetry / calorimetry.
+      fields:
+        - key: mode
+          type: str
+          required: true
+          options: [TGA, DSC, TGA-DSC (STA), DTA, TGA-MS, TGA-FTIR, dilatometry]
+          description: Thermal analysis mode.
+        - key: atmosphere
+          type: str
+          options: [air, nitrogen, argon, oxygen, hydrogen-argon, CO2, other]
+          description: Purge gas.
+        - key: gas_flow
+          type: float
+          unit: mL/min
+          description: Purge gas flow.
+        - key: heating_rate
+          type: float
+          unit: K/min
+          description: Heating rate.
+        - key: temperature_program
+          type: dict
+          description: Temperature programme.
+          fields:
+            - key: start
+              type: float
+              unit: "°C"
+              description: Start temperature.
+            - key: end
+              type: float
+              unit: "°C"
+              description: End temperature.
+            - key: isothermal_segments
+              type: str
+              description: Isothermal segments as text.
+        - key: crucible
+          type: str
+          options: [alumina, platinum, aluminium (pierced lid), aluminium (sealed), quartz, other]
+          description: Crucible.
+        - key: sample_mass
+          type: float
+          unit: mg
+          description: Initial sample mass.
+          term: http://qudt.org/vocab/quantitykind/Mass
+        - key: total_mass_loss
+          type: float
+          unit: "%"
+          description: Total mass loss over the programme.
+        - key: thermal_events
+          type: list
+          description: Detected thermal events.
+          items:
+            - type: dict
+              fields:
+                - key: temperature
+                  type: float
+                  unit: "°C"
+                  description: Onset / peak temperature.
+                - key: event_type
+                  type: str
+                  options: [mass loss step, endothermic peak, exothermic peak, glass transition, melting, crystallisation, decomposition]
+                  description: Event type.
+                - key: mass_change
+                  type: float
+                  unit: "%"
+                  description: Mass change of the step.
+                - key: enthalpy
+                  type: float
+                  unit: J/g
+                  description: Enthalpy of the event.
+                - key: assignment
+                  type: str
+                  description: Interpretation.
+
+  mechanical_test:
+    - key: mechanical_test
+      type: dict
+      description: Mechanical testing.
+      fields:
+        - key: test_type
+          type: str
+          required: true
+          options: [tensile, compression, flexural 3-point, flexural 4-point, hardness Vickers, hardness Brinell, hardness Rockwell, nanoindentation, impact Charpy, fatigue, creep, fracture toughness]
+          description: Test type.
+        - key: standard
+          type: str
+          description: Test standard (e.g. ISO 6892-1, ISO 14125, ISO 6507-1).
+        - key: specimen
+          type: dict
+          description: Specimen geometry.
+          fields:
+            - key: geometry
+              type: str
+              description: Geometry (dog-bone, bar, cylinder, pellet).
+            - key: length
+              type: float
+              unit: mm
+              description: Length.
+            - key: width
+              type: float
+              unit: mm
+              description: Width / diameter.
+            - key: thickness
+              type: float
+              unit: mm
+              description: Thickness.
+            - key: gauge_length
+              type: float
+              unit: mm
+              description: Gauge length.
+        - key: crosshead_speed
+          type: float
+          unit: mm/min
+          description: Crosshead / loading speed.
+        - key: test_temperature
+          type: float
+          unit: "°C"
+          description: Test temperature.
+          term: http://qudt.org/vocab/quantitykind/Temperature
+        - key: number_of_specimens
+          type: int
+          range: {min: 1}
+          description: Number of specimens tested.
+        - key: results
+          type: dict
+          description: Mean results (uncertainties in the result record).
+          fields:
+            - key: elastic_modulus
+              type: float
+              unit: GPa
+              description: Elastic modulus.
+            - key: yield_strength
+              type: float
+              unit: MPa
+              description: Yield strength (Rp0.2).
+            - key: ultimate_strength
+              type: float
+              unit: MPa
+              description: Ultimate tensile / flexural / compressive strength.
+            - key: elongation_at_break
+              type: float
+              unit: "%"
+              description: Elongation at break.
+            - key: hardness
+              type: float
+              description: Hardness value.
+            - key: hardness_scale
+              type: str
+              options: [HV0.1, HV0.3, HV0.5, HV1, HV5, HV10, HBW, HRC, HRB, other]
+              description: Hardness scale.
+            - key: impact_energy
+              type: float
+              unit: J
+              description: Impact energy.
+            - key: fracture_toughness
+              type: float
+              unit: "MPa·m½"
+              description: Fracture toughness K_IC.
+
+  electrochemical_test:
+    - key: electrochemistry
+      type: dict
+      description: Electrochemical characterisation.
+      fields:
+        - key: cell_type
+          type: str
+          required: true
+          options: [3-electrode cell, 2-electrode coin cell CR2032, Swagelok cell, pouch cell, flow cell, H-cell, other]
+          description: Cell configuration.
+        - key: electrodes
+          type: dict
+          description: Electrodes.
+          fields:
+            - key: working
+              type: str
+              description: Working electrode (material, loading, area).
+            - key: counter
+              type: str
+              description: Counter electrode.
+            - key: reference
+              type: str
+              options: [Ag/AgCl (3 M KCl), SCE, Hg/HgO, RHE, Li/Li+, Na/Na+, none (2-electrode)]
+              description: Reference electrode.
+            - key: active_mass
+              type: float
+              unit: mg
+              description: Active material mass on the working electrode.
+            - key: electrode_area
+              type: float
+              unit: "cm²"
+              description: Geometric electrode area.
+        - key: electrolyte
+          type: dict
+          description: Electrolyte.
+          fields:
+            - key: composition
+              type: str
+              description: Electrolyte composition (e.g. 1 M LiPF6 in EC:DMC 1:1).
+            - key: concentration
+              type: float
+              unit: mol/L
+              description: Salt concentration.
+            - key: volume
+              type: float
+              unit: mL
+              description: Electrolyte volume.
+            - key: deaerated
+              type: bool
+              description: Electrolyte purged with inert gas.
+        - key: technique
+          type: str
+          required: true
+          options: [cyclic voltammetry (CV), linear sweep voltammetry (LSV), electrochemical impedance spectroscopy (EIS), galvanostatic charge-discharge (GCD), chronoamperometry (CA), chronopotentiometry (CP), Tafel, other]
+          description: Electrochemical technique.
+        - key: parameters
+          type: dict
+          description: Technique parameters.
+          fields:
+            - key: potential_lower
+              type: float
+              unit: V
+              description: Lower potential limit.
+            - key: potential_upper
+              type: float
+              unit: V
+              description: Upper potential limit.
+            - key: scan_rate
+              type: float
+              unit: mV/s
+              description: Scan rate (CV / LSV).
+            - key: current_density
+              type: float
+              unit: "mA/cm²"
+              description: Current density (GCD / CP).
+            - key: specific_current
+              type: float
+              unit: mA/g
+              description: Specific current (GCD).
+            - key: frequency_min
+              type: float
+              unit: Hz
+              description: Lowest EIS frequency.
+            - key: frequency_max
+              type: float
+              unit: Hz
+              description: Highest EIS frequency.
+            - key: ac_amplitude
+              type: float
+              unit: mV
+              description: AC amplitude (EIS).
+            - key: cycles
+              type: int
+              range: {min: 1}
+              description: Number of cycles.
+        - key: results
+          type: dict
+          description: Key results.
+          fields:
+            - key: specific_capacitance
+              type: float
+              unit: F/g
+              description: Specific capacitance.
+            - key: specific_capacity
+              type: float
+              unit: mAh/g
+              description: Specific capacity.
+            - key: onset_potential
+              type: float
+              unit: V
+              description: Onset potential (electrocatalysis).
+            - key: charge_transfer_resistance
+              type: float
+              unit: "Ω"
+              description: Charge transfer resistance from EIS.
+            - key: coulombic_efficiency
+              type: float
+              unit: "%"
+              description: Coulombic efficiency.
+
+  spectroscopy_measurement:
+    - key: spectroscopy
+      type: dict
+      description: Vibrational / optical / surface spectroscopy.
+      fields:
+        - key: technique
+          type: str
+          required: true
+          options: [FTIR-ATR, FTIR-KBr pellet, FTIR-DRIFTS, Raman, UV-Vis absorbance, UV-Vis diffuse reflectance (DRS), photoluminescence, XPS, NMR, other]
+          description: Spectroscopic technique.
+        - key: spectral_range
+          type: str
+          description: Spectral range with unit as text (e.g. 4000–400 cm⁻¹; 200–800 nm).
+        - key: resolution
+          type: str
+          description: Spectral resolution with unit as text.
+        - key: number_of_scans
+          type: int
+          range: {min: 1}
+          description: Number of accumulated scans.
+        - key: laser
+          type: dict
+          description: Excitation source (Raman / PL).
+          fields:
+            - key: wavelength
+              type: float
+              unit: nm
+              description: Excitation wavelength.
+              term: http://qudt.org/vocab/quantitykind/Wavelength
+            - key: power_at_sample
+              type: float
+              unit: mW
+              description: Power at the sample.
+        - key: accessory
+          type: str
+          description: Accessory (ATR crystal, integrating sphere, cuvette path length).
+        - key: background_reference
+          type: str
+          description: Background / reference measured (air, BaSO4, solvent).
+        - key: bands
+          type: list
+          description: Characteristic bands / peaks.
+          items:
+            - type: dict
+              fields:
+                - key: position
+                  type: float
+                  description: Band position (unit as in spectral_range).
+                - key: assignment
+                  type: str
+                  description: Assignment.
+        - key: band_gap
+          type: float
+          unit: eV
+          description: Optical band gap (Tauc plot, DRS).
+
+templates:
+
+  - identifier: tmpl-sample-material-specimen
+    kind: record
+    title: Sample – material specimen
+    description: A processed material specimen (pellet, bar, film, coating) for characterisation or testing.
+    record:
+      type: sample
+      title: "<sample id> – <material> <geometry>"
+      tags: [sample, material-specimen, area-4]
+      collections: [area-4-functional-materials]
+    fields:
+      - key: sample_id
+        type: str
+        required: true
+        description: Laboratory sample code.
+        term: https://schema.org/identifier
+      - key: sample_class
+        type: str
+        required: true
+        default: specimen (processed material)
+        options: [specimen (processed material), synthesised material, commercial material]
+        description: Class of the sample.
+      - key: matrix
+        type: str
+        required: true
+        description: Material / composition.
+      - key: material_class
+        type: str
+        options: [ceramic, metal / alloy, polymer, composite, glass, carbon material, MOF / COF, thin film / coating, other]
+        description: Material class.
+      - key: geometry
+        type: str
+        description: Specimen geometry and dimensions.
+      - key: mass
+        type: float
+        unit: g
+        range: {min: 0}
+        description: Mass.
+        term: http://qudt.org/vocab/quantitykind/Mass
+      - key: processing_identifier
+        type: str
+        description: Identifier of the processing / synthesis record (also `was_generated_by`).
+      - key: parent_sample
+        type: str
+        description: Parent sample identifier (also `was_derived_from`).
+      - key: storage
+        type: dict
+        description: Storage.
+        fields:
+          - key: location
+            type: str
+            description: Storage location.
+          - key: conditions
+            type: str
+            options: [ambient, desiccator, inert atmosphere, dark, cooled, other]
+            description: Storage conditions.
+      - key: lifecycle_status
+        type: str
+        required: true
+        default: prepared
+        options: [planned, received, in preparation, prepared, under measurement, measured, archived, consumed, disposed]
+        description: Lifecycle status.
+      - key: notes
+        type: str
+        description: Any remarks.
+
+  - identifier: tmpl-prep-material-processing
+    kind: record
+    title: Sample preparation – material processing
+    description: Powder processing, forming and thermal treatment producing a material specimen.
+    record:
+      type: sample-preparation
+      title: "Processing <route> – <target material> – <batch>"
+      tags: [sample-preparation, processing, area-4]
+      collections: [area-4-functional-materials]
+    fields:
+      - use: sample_preparation_core
+      - use: solid_state_processing
+
+  - identifier: tmpl-exp-xrd
+    kind: record
+    title: Experiment – X-ray diffraction
+    description: Powder or thin-film XRD measurement with phase analysis.
+    record:
+      type: experiment
+      title: "XRD – <sample id> – <date>"
+      tags: [experiment, xrd, area-4]
+      collections: [area-4-functional-materials]
+    fields:
+      - use: experiment_core
+      - use: xrd_measurement
+
+  - identifier: tmpl-exp-electron-microscopy
+    kind: record
+    title: Experiment – electron microscopy (SEM / TEM / EDS)
+    description: Imaging and microanalysis session.
+    record:
+      type: experiment
+      title: "<microscope type> – <sample id> – <date>"
+      tags: [experiment, electron-microscopy, area-4]
+      collections: [area-4-functional-materials]
+    fields:
+      - use: experiment_core
+      - use: electron_microscopy
+
+  - identifier: tmpl-exp-thermal-analysis
+    kind: record
+    title: Experiment – thermal analysis (TGA / DSC)
+    description: Thermogravimetric and calorimetric measurement.
+    record:
+      type: experiment
+      title: "<mode> – <sample id> – <date>"
+      tags: [experiment, thermal-analysis, area-4]
+      collections: [area-4-functional-materials]
+    fields:
+      - use: experiment_core
+      - use: thermal_analysis
+
+  - identifier: tmpl-exp-mechanical-test
+    kind: record
+    title: Experiment – mechanical test
+    description: Tensile, flexural, compression, hardness or impact testing.
+    record:
+      type: experiment
+      title: "<test type> – <sample id> – <date>"
+      tags: [experiment, mechanical-testing, area-4]
+      collections: [area-4-functional-materials]
+    fields:
+      - use: experiment_core
+      - use: mechanical_test
+
+  - identifier: tmpl-exp-electrochemical
+    kind: record
+    title: Experiment – electrochemical characterisation
+    description: CV, EIS, GCD and related measurements on a potentiostat / battery tester.
+    record:
+      type: experiment
+      title: "<technique> – <sample id> – <date>"
+      tags: [experiment, electrochemistry, area-4]
+      collections: [area-4-functional-materials]
+    fields:
+      - use: experiment_core
+      - use: electrochemical_test
+
+  - identifier: tmpl-exp-spectroscopy
+    kind: record
+    title: Experiment – spectroscopy (FTIR / Raman / UV-Vis / XPS)
+    description: Vibrational, optical or surface spectroscopy measurement.
+    record:
+      type: experiment
+      title: "<technique> – <sample id> – <date>"
+      tags: [experiment, spectroscopy, area-4]
+      collections: [area-4-functional-materials]
+    fields:
+      - use: experiment_core
+      - use: spectroscopy_measurement
+
+  # ------------------------------------------------------------------ extras templates
+  - identifier: xtr-solid-state-processing
+    kind: extras
+    title: Block – material processing
+    description: Milling, pressing, thermal treatment, densities.
+    fields:
+      - use: solid_state_processing
+
+  - identifier: xtr-xrd-measurement
+    kind: extras
+    title: Block – XRD measurement
+    description: Geometry, radiation, scan, holder, phase analysis.
+    fields:
+      - use: xrd_measurement
+
+  - identifier: xtr-electron-microscopy
+    kind: extras
+    title: Block – electron microscopy session
+    description: Microscope settings, detectors, coating, EDS.
+    fields:
+      - use: electron_microscopy
+
+  - identifier: xtr-thermal-analysis
+    kind: extras
+    title: Block – thermal analysis
+    description: TGA / DSC programme and events.
+    fields:
+      - use: thermal_analysis
+
+  - identifier: xtr-mechanical-test
+    kind: extras
+    title: Block – mechanical test
+    description: Test type, specimen, speed, results.
+    fields:
+      - use: mechanical_test
+
+  - identifier: xtr-electrochemical-test
+    kind: extras
+    title: Block – electrochemical test
+    description: Cell, electrodes, electrolyte, technique parameters, results.
+    fields:
+      - use: electrochemical_test
+
+  - identifier: xtr-spectroscopy-measurement
+    kind: extras
+    title: Block – spectroscopy measurement
+    description: Technique, range, resolution, excitation, bands, band gap.
+    fields:
+      - use: spectroscopy_measurement

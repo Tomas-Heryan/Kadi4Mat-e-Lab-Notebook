@@ -1,0 +1,31 @@
+# Entry point of the CEET laboratory model (structure only, no project data).
+#
+#   python -m kadi_lab_manager validate model/ceet.yaml
+#   python -m kadi_lab_manager plan     model/ceet.yaml
+#   python -m kadi_lab_manager apply    model/ceet.yaml --yes
+#
+# For a disposable test deployment set `settings.namespace` (e.g. "-test1"): every
+# identifier gets that suffix, so the deployment can be removed again with `cleanup`.
+schema_version: 1
+
+settings:
+  name: CEET laboratory model
+  version: 1.0.0
+  namespace: ""
+  timezone: Europe/Prague          # used for date values written without a time zone
+  default_visibility: private
+  default_license: CC-BY-4.0
+  drop_empty_optional_fields: false  # keep the full template structure in every record
+  strict_link_vocabulary: true
+  enforce_type_prefix: true
+  file_root: ../data               # relative paths of record files resolve against this folder
+
+includes:
+  - vocab.yaml
+  - fieldsets/core.yaml
+  - collections.yaml
+  - templates/core.yaml
+  - areas/area-1-electrical-engineering.yaml
+  - areas/area-2-environmental-chemistry.yaml
+  - areas/area-3-nanotechnology.yaml
+  - areas/area-4-functional-materials.yaml

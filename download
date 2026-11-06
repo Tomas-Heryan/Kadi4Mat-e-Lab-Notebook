@@ -1,0 +1,20 @@
+# secrets
+.env
+*.token
+
+# virtual environments and caches
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# run artefacts (keep them out of Git unless you want an audit trail; the state file
+# per host is worth committing in a private repository)
+reports/
+snapshots/
+exports/
+build/
+
+# imported copies and downloaded files
+files/

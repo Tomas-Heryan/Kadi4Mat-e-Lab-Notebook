@@ -1,0 +1,80 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Kadi: doctor (connection, token, TLS)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "kadi_lab_manager",
+      "args": ["doctor"],
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
+      "env": { "PYTHONPATH": "${workspaceFolder}/src" },
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Kadi: validate demo model (offline)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "kadi_lab_manager",
+      "args": ["validate", "model/demo.yaml"],
+      "cwd": "${workspaceFolder}",
+      "env": { "PYTHONPATH": "${workspaceFolder}/src" },
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Kadi: plan demo (dry run against kadi-test)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "kadi_lab_manager",
+      "args": ["plan", "model/demo.yaml"],
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
+      "env": { "PYTHONPATH": "${workspaceFolder}/src" },
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Kadi: apply demo (creates objects!)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "kadi_lab_manager",
+      "args": ["apply", "model/demo.yaml"],
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
+      "env": { "PYTHONPATH": "${workspaceFolder}/src" },
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Kadi: snapshot demo (export + drift report)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "kadi_lab_manager",
+      "args": ["snapshot", "model/demo.yaml"],
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
+      "env": { "PYTHONPATH": "${workspaceFolder}/src" },
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Kadi: cleanup demo (dry run)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "kadi_lab_manager",
+      "args": ["cleanup", "--namespace=-demo"],
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
+      "env": { "PYTHONPATH": "${workspaceFolder}/src" },
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Tests: offline + mock server",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "unittest",
+      "args": ["discover", "-s", "tests", "-v"],
+      "cwd": "${workspaceFolder}",
+      "env": { "PYTHONPATH": "${workspaceFolder}/src" },
+      "console": "integratedTerminal"
+    }
+  ]
+}

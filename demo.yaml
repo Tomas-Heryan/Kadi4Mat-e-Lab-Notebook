@@ -1,0 +1,21 @@
+# Disposable demo deployment: the whole CEET structure plus the worked example project,
+# all identifiers suffixed with "-demo" so it can be removed again with `cleanup`.
+#
+#   python -m kadi_lab_manager validate model/demo.yaml
+#   python -m kadi_lab_manager plan     model/demo.yaml
+#   python -m kadi_lab_manager apply    model/demo.yaml --yes
+#   python -m kadi_lab_manager cleanup  --namespace -demo --apply --yes
+schema_version: 1
+
+settings:
+  name: CEET laboratory model – DEMO deployment
+  version: 1.0.0
+  namespace: "-demo"
+  timezone: Europe/Prague
+  default_visibility: private
+  default_license: CC-BY-4.0
+  file_root: ../data
+
+includes:
+  - ceet.yaml
+  - projects/demo-photocatalysis.yaml

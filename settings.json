@@ -1,0 +1,16 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
+  "python.envFile": "${workspaceFolder}/.env",
+  "python.analysis.extraPaths": ["${workspaceFolder}/src"],
+  "python.testing.unittestEnabled": true,
+  "python.testing.unittestArgs": ["-v", "-s", "tests", "-p", "test_*.py"],
+  "terminal.integrated.env.windows": {
+    "PYTHONPATH": "${workspaceFolder}/src",
+    "PYTHONUTF8": "1"
+  },
+  "terminal.integrated.env.linux": { "PYTHONPATH": "${workspaceFolder}/src" },
+  "terminal.integrated.env.osx": { "PYTHONPATH": "${workspaceFolder}/src" },
+  "files.associations": { "*.yaml": "yaml" },
+  "yaml.schemas": {},
+  "[yaml]": { "editor.tabSize": 2, "editor.insertSpaces": true }
+}

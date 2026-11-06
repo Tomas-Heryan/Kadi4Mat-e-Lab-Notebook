@@ -1,0 +1,895 @@
+# Core record templates (one per record type). Each template fixes the record type,
+# default tags, the catalogue collection the record is placed in, and the metadata
+# fields (with units, terms, options and required flags). Area packs extend these.
+schema_version: 1
+
+templates:
+
+  # ================================================================= PROJECT COVER RECORD
+  - identifier: tmpl-project
+    kind: record
+    title: Project cover record
+    description: |
+      Holds the metadata of a research project (funding, people, scientific areas, data policy).
+      Every record of the project links to it with `part_of_project`.
+    record:
+      type: project
+      title: "Project: <acronym> – <title>"
+      tags: [project]
+      collections: [projects]
+    fields:
+      - key: acronym
+        type: str
+        required: true
+        description: Short project acronym.
+        term: https://schema.org/alternateName
+      - key: funding
+        type: dict
+        description: Funding information.
+        fields:
+          - key: funder
+            type: str
+            required: true
+            options: [TA CR, GA CR, MSMT, MPO, EU Horizon Europe, EU OP JAK, Interreg, NAKI, VSB-TUO internal (SGS), Industry contract, Other]
+            description: Funding agency / programme.
+            term: https://schema.org/funder
+          - key: programme
+            type: str
+            description: Programme or call (e.g. TREND, SIGMA, Horizon Europe cluster 5).
+          - key: grant_number
+            type: str
+            description: Grant / contract number.
+            term: https://schema.org/identifier
+          - key: start_date
+            type: date
+            description: Project start.
+            term: https://schema.org/startDate
+          - key: end_date
+            type: date
+            description: Project end.
+            term: https://schema.org/endDate
+      - key: people
+        type: dict
+        description: Responsible people.
+        fields:
+          - key: principal_investigator
+            type: str
+            required: true
+            description: Principal investigator.
+            term: https://schema.org/accountablePerson
+          - key: data_steward
+            type: str
+            description: Data steward responsible for the project's data management.
+          - key: contact_email
+            type: str
+            description: Project contact e-mail.
+            term: https://schema.org/email
+      - key: scientific_areas
+        type: list
+        description: CEET scientific areas the project belongs to (select one or more).
+        items:
+          - type: str
+            options: ["1 Environmental Electricity & Engineering", "2 Applied Chemistry – Waste, Water, Air", "3 Environmental Nanotechnology", "4 New Functional Materials"]
+      - key: data_management
+        type: dict
+        description: Data management plan essentials.
+        fields:
+          - key: dmp_reference
+            type: str
+            description: Link or identifier of the data management plan.
+          - key: repository
+            type: str
+            default: Zenodo
+            options: [Zenodo, Institutional repository, Project-specific, None]
+            description: Target repository for published data sets.
+          - key: default_license
+            type: str
+            default: CC-BY-4.0
+            options: [CC-BY-4.0, CC-BY-SA-4.0, CC0-1.0, CC-BY-NC-4.0, Restricted]
+            description: Default license for published data.
+          - key: embargo_until
+            type: date
+            description: Embargo end for publication, if any.
+          - key: confidentiality
+            type: str
+            default: internal
+            options: [public, internal, confidential]
+            description: Confidentiality class of the project data (confidential data must not go to Zenodo).
+      - key: zenodo_community
+        type: str
+        description: Zenodo community slug used when publishing.
+      - key: keywords
+        type: list
+        description: Free keywords.
+        items:
+          - type: str
+
+  # ================================================================= INSTRUMENT (device)
+  - identifier: tmpl-instrument
+    kind: record
+    title: Instrument (measuring device)
+    description: |
+      One record per measuring device. Experiments link to it with `measured_on`; the record carries
+      identification, location, status, calibration and software information.
+    record:
+      type: instrument
+      title: "<technique> – <manufacturer> <model> (<internal label>)"
+      tags: [instrument, device]
+      collections: [cat-instruments]
+    fields:
+      - key: internal_label
+        type: str
+        required: true
+        description: Internal label used in the lab (e.g. XRD-01).
+      - key: technique
+        type: str
+        required: true
+        description: Primary measurement technique (e.g. X-ray diffraction, LC-MS/MS, power analysis).
+        term: https://schema.org/measurementTechnique
+      - key: technique_term
+        type: str
+        iri: true
+        description: Ontology IRI of the technique (CHMO/OBI), if known.
+      - key: measured_quantities
+        type: list
+        description: Quantities the instrument measures (free text or QUDT quantity kinds).
+        items:
+          - type: str
+      - use: asset_identity
+      - use: maintenance_calibration
+      - use: software_block
+      - key: specifications
+        type: dict
+        description: Key specifications (free structure of numbers with units).
+        fields:
+          - key: measurement_range
+            type: str
+            description: Measurement range as text (e.g. 5–120° 2θ; 0–600 V; 1 pg/L–1 mg/L).
+          - key: resolution
+            type: str
+            description: Resolution / sensitivity as text.
+          - key: uncertainty
+            type: float
+            unit: "%"
+            description: Typical relative measurement uncertainty.
+      - key: documentation
+        type: dict
+        description: Manuals and SOP references.
+        fields:
+          - key: manual_reference
+            type: str
+            description: Where the manual is stored (IRI or path).
+          - key: sop_identifier
+            type: str
+            description: Identifier of the operating SOP (method record).
+      - key: notes
+        type: str
+        description: Any remarks.
+
+  # ================================================================= EQUIPMENT
+  - identifier: tmpl-equipment
+    kind: record
+    title: Laboratory equipment
+    description: |
+      Auxiliary equipment used in preparations and experiments (furnace, mill, reactor, SPE manifold,
+      centrifuge, balance, climate chamber, test bench). Activities link to it with `used`.
+    record:
+      type: equipment
+      title: "<equipment class> – <manufacturer> <model> (<internal label>)"
+      tags: [equipment]
+      collections: [cat-equipment]
+    fields:
+      - key: internal_label
+        type: str
+        required: true
+        description: Internal label used in the lab (e.g. FURN-02).
+      - key: equipment_class
+        type: str
+        required: true
+        options: [furnace / oven, mill / grinder, press, reactor, photoreactor, autoclave, centrifuge, SPE manifold, rotary evaporator, balance, pH / conductivity meter, fume hood, glove box, climate chamber, electrical test bench, power supply, electronic load, data logger, sampler / pump, filtration unit, ultrasonic bath, stirrer / hot plate, drying cabinet, freezer / refrigerator, other]
+        description: Class of equipment.
+      - use: asset_identity
+      - use: maintenance_calibration
+      - key: capabilities
+        type: dict
+        description: Capability limits relevant for planning.
+        fields:
+          - key: max_temperature
+            type: float
+            unit: "°C"
+            description: Maximum operating temperature.
+          - key: max_speed
+            type: int
+            unit: rpm
+            description: Maximum rotation speed.
+          - key: max_pressure
+            type: float
+            unit: bar
+            description: Maximum pressure.
+          - key: working_volume
+            type: float
+            unit: L
+            description: Working volume / capacity.
+          - key: max_load
+            type: float
+            unit: kg
+            description: Maximum load / sample mass.
+          - key: electrical_power
+            type: float
+            unit: kW
+            description: Rated electrical power.
+          - key: controlled_atmosphere
+            type: bool
+            default: false
+            description: Supports controlled atmosphere (inert gas, vacuum).
+      - key: consumables
+        type: list
+        description: Consumables normally used with the equipment (crucibles, jars, cartridges, filters).
+        items:
+          - type: str
+      - key: notes
+        type: str
+        description: Any remarks.
+
+  # ================================================================= MATERIAL / REAGENT
+  - identifier: tmpl-material
+    kind: record
+    title: Material, reagent or reference material batch
+    description: |
+      One record per batch (lot) of a chemical, precursor, reference material or consumable used as an
+      input. Preparations and experiments link to it with `used`; calibrations with `calibrated_with`.
+    record:
+      type: material
+      title: "<material name> – <supplier> lot <lot number>"
+      tags: [material]
+      collections: [cat-materials]
+    fields:
+      - key: material_name
+        type: str
+        required: true
+        description: Name of the material / chemical.
+        term: https://schema.org/name
+      - key: material_class
+        type: str
+        required: true
+        options: [reagent, solvent, precursor, catalyst, reference material / CRM, calibration standard, internal standard, consumable, commercial material, synthesised material, gas, other]
+        description: Role / class of the material.
+      - key: chemical_formula
+        type: str
+        description: Chemical formula or composition.
+        term: https://schema.org/molecularFormula
+      - key: cas_number
+        type: str
+        description: CAS registry number.
+      - key: supplier
+        type: str
+        description: Supplier / producer.
+        term: https://schema.org/manufacturer
+      - key: product_number
+        type: str
+        description: Supplier product / catalogue number.
+      - key: lot_number
+        type: str
+        required: true
+        description: Lot / batch number (use 'n/a' if none).
+      - key: purity
+        type: float
+        unit: "%"
+        range: {min: 0, max: 100}
+        description: Declared purity or grade value.
+      - key: grade
+        type: str
+        options: [analytical, LC-MS, HPLC, technical, p.a., puriss., reference material, not specified]
+        description: Quality grade.
+      - key: form
+        type: str
+        options: [powder, granulate, pellets, liquid, solution, gas, foil / sheet, wire / rod, suspension, other]
+        description: Physical form.
+      - key: received_date
+        type: date
+        description: Date of receipt.
+      - key: expiry_date
+        type: date
+        description: Expiry / retest date.
+        term: https://schema.org/expires
+      - key: storage_conditions
+        type: str
+        options: [room temperature, refrigerated 2–8 °C, frozen −20 °C, frozen −80 °C, inert atmosphere, desiccator, dark, other]
+        description: Required storage conditions.
+      - key: hazards
+        type: list
+        description: GHS hazard classes / H-statements.
+        items:
+          - type: str
+      - key: safety_data_sheet
+        type: str
+        iri: true
+        description: Link to the safety data sheet.
+      - key: certificate_reference
+        type: str
+        description: Certificate of analysis / CRM certificate reference.
+      - key: certified_values
+        type: list
+        description: Certified property values (reference materials).
+        items:
+          - type: dict
+            fields:
+              - key: property
+                type: str
+                required: true
+                description: Certified property / analyte.
+              - key: value
+                type: float
+                required: true
+                description: Certified value.
+              - key: unit
+                type: str
+                description: Unit of the certified value (text, e.g. mg/kg).
+              - key: uncertainty
+                type: float
+                description: Expanded uncertainty (same unit).
+      - key: notes
+        type: str
+        description: Any remarks.
+
+  # ================================================================= SAMPLE
+  - identifier: tmpl-sample
+    kind: record
+    title: Sample / specimen
+    description: |
+      A physical sample: environmental sample, synthesised material, specimen or device under test.
+      Derived samples link to their parent with `was_derived_from`; samples produced by an activity
+      link to it with `was_generated_by`.
+    record:
+      type: sample
+      title: "<sample id> – <matrix / material> (<origin>)"
+      tags: [sample]
+    fields:
+      - key: sample_id
+        type: str
+        required: true
+        description: Laboratory sample code (as on the label).
+        term: https://schema.org/identifier
+      - key: sample_class
+        type: str
+        required: true
+        options: [environmental – water, environmental – air / aerosol, environmental – soil / sediment / sludge, waste / leachate, synthesised material, commercial material, specimen (processed material), device under test, biological, other]
+        description: Class of the sample.
+      - key: matrix
+        type: str
+        required: true
+        description: Matrix or material (e.g. wastewater influent, PM2.5 filter, TiO2 powder, steel sheet).
+      - key: matrix_term
+        type: str
+        iri: true
+        description: Ontology IRI for the matrix (ENVO, CHEBI, ...), if known.
+      - key: description_of_appearance
+        type: str
+        description: Appearance (colour, phase, particle size class, condition).
+      - key: amount
+        type: float
+        unit: g
+        range: {min: 0}
+        description: Amount of sample available (mass); use volume for liquids.
+      - key: volume
+        type: float
+        unit: mL
+        range: {min: 0}
+        description: Volume of sample available.
+      - key: origin
+        type: dict
+        description: Where / what the sample comes from.
+        use: geo_origin
+      - key: sampling
+        type: dict
+        description: Sampling details (environmental samples).
+        fields:
+          - key: sampled_at
+            type: date
+            description: Date and time of sampling.
+          - key: sampled_by
+            type: str
+            description: Person / organisation who took the sample.
+          - key: sampling_method
+            type: str
+            options: [grab, 24 h time-proportional composite, 24 h flow-proportional composite, passive sampler, active filter sampling, core / auger, random pile sampling, not applicable]
+            description: Sampling method.
+          - key: sampling_standard
+            type: str
+            description: Standard followed (e.g. CSN ISO 5667-10, EN 12341).
+          - key: container
+            type: str
+            description: Container type and volume (e.g. 1 L amber glass).
+          - key: preservation
+            type: str
+            description: Preservation applied (cooling, acidification, ...).
+      - key: receipt
+        type: dict
+        description: Receipt in the laboratory.
+        fields:
+          - key: received_at
+            type: date
+            description: Date and time of receipt.
+          - key: received_by
+            type: str
+            description: Person who received the sample.
+          - key: condition_on_receipt
+            type: str
+            options: [ok, damaged, temperature not kept, label missing, other]
+            description: Condition on receipt.
+      - key: storage
+        type: dict
+        description: Storage of the sample.
+        fields:
+          - key: location
+            type: str
+            description: Storage location (room, fridge, shelf).
+          - key: temperature
+            type: float
+            unit: "°C"
+            description: Storage temperature.
+            term: http://qudt.org/vocab/quantitykind/Temperature
+          - key: conditions
+            type: str
+            options: [ambient, cooled, frozen, dark, inert atmosphere, desiccator, other]
+            description: Storage conditions.
+          - key: retention_until
+            type: date
+            description: Keep the sample at least until this date.
+      - key: hazards
+        type: list
+        description: Hazards associated with the sample.
+        items:
+          - type: str
+            options: [none known, toxic, corrosive, flammable, oxidising, biological, radioactive, nanomaterial, other]
+      - key: parent_sample
+        type: str
+        description: Identifier of the parent sample for aliquots / derived samples (also a `was_derived_from` link).
+      - key: lifecycle_status
+        type: str
+        required: true
+        default: received
+        options: [planned, received, in preparation, prepared, under measurement, measured, archived, consumed, disposed]
+        description: Lifecycle status of the sample.
+      - key: disposal_date
+        type: date
+        description: Date of disposal, if applicable.
+      - key: notes
+        type: str
+        description: Any remarks.
+
+  # ================================================================= SAMPLE PREPARATION
+  - identifier: tmpl-sample-preparation
+    kind: record
+    title: Sample preparation (generic)
+    description: |
+      An activity that transforms input samples / materials into prepared samples. Links: `used` to the
+      input samples, materials and equipment, `follows_plan` to the protocol; output samples link back with
+      `was_generated_by`. Area packs add technique-specific blocks.
+    record:
+      type: sample-preparation
+      title: "<preparation class> of <sample id> for <purpose>"
+      tags: [sample-preparation]
+    fields:
+      - use: sample_preparation_core
+
+  # ================================================================= EXPERIMENT (generic)
+  - identifier: tmpl-experiment
+    kind: record
+    title: Experiment / measurement (generic)
+    description: |
+      A measurement, test, characterisation, monitoring or simulation activity. Links: `measured_on`
+      to the instrument, `used` to samples / equipment / materials, `follows_plan` to the method; raw data
+      and results link back with `was_generated_by`. Area packs add technique-specific blocks.
+    record:
+      type: experiment
+      title: "<technique> of <sample id> – <date>"
+      tags: [experiment]
+    fields:
+      - use: experiment_core
+
+  # ================================================================= METHOD / PROTOCOL
+  - identifier: tmpl-method
+    kind: record
+    title: Method, protocol or SOP
+    description: |
+      A versioned plan: analytical method, preparation protocol, test procedure, calibration procedure or
+      simulation workflow. Never edit a validated version – create a new one and link it with `supersedes`.
+    record:
+      type: method
+      title: "<method name> v<version>"
+      tags: [method]
+      collections: [cat-methods]
+    fields:
+      - key: method_class
+        type: str
+        required: true
+        options: [analytical method, sample preparation protocol, synthesis protocol, test procedure, calibration procedure, sampling procedure, simulation workflow, operating procedure (SOP), other]
+        description: Class of the method.
+      - key: version
+        type: str
+        required: true
+        description: Version string (e.g. v03, 2026-01).
+        term: https://schema.org/version
+      - key: status
+        type: str
+        required: true
+        default: draft
+        options: [draft, under validation, validated, active, retired]
+        description: Lifecycle status.
+      - key: effective_from
+        type: date
+        description: Date from which this version is in force.
+      - key: author
+        type: str
+        description: Author / owner of the method.
+        term: https://schema.org/author
+      - key: approved_by
+        type: str
+        description: Person who approved the version.
+      - key: standard_reference
+        type: str
+        description: Underlying standard (e.g. CSN EN ISO 17294-2, IEC 61000-4-30, EN 12457-4).
+      - key: scope
+        type: str
+        description: Scope / applicability (matrices, materials, ranges).
+      - key: analytes_or_quantities
+        type: list
+        description: Analytes or measured quantities covered.
+        items:
+          - type: str
+      - key: performance
+        type: dict
+        description: Validated performance characteristics.
+        fields:
+          - key: measurement_range
+            type: str
+            description: Working range as text.
+          - key: limit_of_quantification
+            type: str
+            description: LOQ(s) as text with units.
+          - key: expanded_uncertainty
+            type: float
+            unit: "%"
+            description: Typical expanded uncertainty (k = 2).
+          - key: validation_report
+            type: str
+            description: Reference to the validation report (IRI or record identifier).
+      - key: supersedes_identifier
+        type: str
+        description: Identifier of the previous version (also a `supersedes` link).
+      - key: document
+        type: dict
+        description: The method document.
+        fields:
+          - key: file_name
+            type: str
+            description: Name of the attached document (PDF/DOCX) in this record.
+          - key: document_sha256
+            type: str
+            description: SHA-256 of the attached document.
+      - key: notes
+        type: str
+        description: Any remarks.
+
+  # ================================================================= RAW DATA
+  - identifier: tmpl-raw-data
+    kind: record
+    title: Raw data set
+    description: |
+      Primary data produced by an experiment. Files are attached to the record; the `files` block keeps
+      the SHA-256 of each file so integrity can be verified after download or Zenodo deposit.
+    record:
+      type: raw-data
+      title: "Raw data: <technique> <sample id> – <date>"
+      tags: [raw-data]
+    fields:
+      - key: data_class
+        type: str
+        required: true
+        options: [instrument raw data, data logger time series, images / micrographs, spectra, chromatograms, diffractograms, simulation input, simulation output, other]
+        description: Class of data.
+      - key: experiment_identifier
+        type: str
+        description: Identifier of the generating experiment (also a `was_generated_by` link).
+      - key: acquired_at
+        type: date
+        description: Acquisition date and time.
+        term: https://schema.org/dateCreated
+      - key: acquisition_software
+        type: str
+        description: Software and version that wrote the data.
+        term: https://schema.org/softwareVersion
+      - key: native_format
+        type: str
+        description: Native / proprietary format (e.g. .wiff, .raw, .xrdml, .csv).
+        term: https://schema.org/encodingFormat
+      - key: processing_level
+        type: str
+        required: true
+        default: raw
+        options: [raw, converted (open format), pre-processed]
+        description: Processing level.
+      - key: total_size
+        type: float
+        unit: MB
+        description: Total size of the data set.
+      - use: data_files
+      - key: access
+        type: dict
+        description: Access and retention.
+        fields:
+          - key: access_level
+            type: str
+            default: internal
+            options: [public, internal, confidential]
+            description: Who may access the data.
+          - key: retention_until
+            type: date
+            description: Retain at least until this date.
+          - key: storage_location
+            type: str
+            description: Primary storage location of the full data (if not fully in Kadi).
+      - key: notes
+        type: str
+        description: Any remarks.
+
+  # ================================================================= RESULT
+  - identifier: tmpl-result
+    kind: record
+    title: Evaluated result
+    description: |
+      Processed / evaluated results derived from raw data (quantities, tables, reports). Links:
+      `was_derived_from` the raw data, `was_generated_by` the experiment or evaluation activity.
+    record:
+      type: result
+      title: "Result: <technique> <sample id> – <date>"
+      tags: [result]
+    fields:
+      - key: result_class
+        type: str
+        required: true
+        options: [quantitative results table, phase / composition analysis, spectrum evaluation, image analysis, kinetic evaluation, performance indicators, test report, model output, other]
+        description: Class of result.
+      - key: evaluated_by
+        type: str
+        required: true
+        description: Person who evaluated the data.
+        term: https://schema.org/agent
+      - key: evaluated_at
+        type: date
+        required: true
+        description: Date of evaluation.
+      - key: evaluation_software
+        type: str
+        description: Software and version used for evaluation.
+        term: https://schema.org/softwareVersion
+      - key: raw_data_identifier
+        type: str
+        description: Identifier of the raw-data record (also a `was_derived_from` link).
+      - key: quantities
+        type: list
+        description: Resulting quantities (one entry per analyte / quantity / sample).
+        items:
+          - type: dict
+            fields:
+              - key: name
+                type: str
+                required: true
+                description: Analyte / quantity / parameter name.
+              - key: sample_id
+                type: str
+                description: Sample the value belongs to.
+              - key: value
+                type: float
+                description: Numeric value (null if below LOQ).
+              - key: unit
+                type: str
+                description: Unit as text (e.g. ng/L, m²/g, %).
+              - key: uncertainty
+                type: float
+                description: Expanded uncertainty in the same unit.
+              - key: below_loq
+                type: bool
+                default: false
+                description: Value below the limit of quantification.
+              - key: loq
+                type: float
+                description: Limit of quantification in the same unit.
+      - key: summary
+        type: str
+        description: Short interpretation / conclusion.
+      - use: quality_control
+      - key: report_file
+        type: str
+        description: Name of the attached report file, if any.
+      - use: data_files
+      - key: notes
+        type: str
+        description: Any remarks.
+
+fieldsets:
+  # Full field list of the generic sample preparation; area packs reuse it.
+  sample_preparation_core:
+    - key: preparation_class
+      type: str
+      required: true
+      options: [extraction, digestion, filtration, drying, grinding / milling, sieving, dilution, calcination / annealing, pressing / pelletising, cutting / sectioning, polishing, coating / deposition, dispersion, synthesis, mixing / homogenisation, conditioning, cleaning, other]
+      description: Class of preparation.
+    - key: purpose
+      type: str
+      description: What the prepared sample is intended for (e.g. LC-MS/MS pharmaceuticals, XRD).
+    - use: activity_header
+    - key: protocol
+      type: dict
+      description: Protocol followed (also expressed as a `follows_plan` link).
+      fields:
+        - key: method_identifier
+          type: str
+          description: Identifier of the method record.
+        - key: version
+          type: str
+          description: Version of the protocol used.
+        - key: deviations
+          type: str
+          description: Deviations from the protocol.
+    - key: input
+      type: dict
+      description: Input material.
+      fields:
+        - key: sample_identifiers
+          type: list
+          description: Identifiers of the input samples (also `used` links).
+          items:
+            - type: str
+        - key: input_amount
+          type: float
+          unit: g
+          description: Mass of input material.
+        - key: input_volume
+          type: float
+          unit: mL
+          description: Volume of input material.
+    - use: process_parameters
+    - use: reagents_used
+    - key: equipment_identifiers
+      type: list
+      description: Identifiers of equipment records used (also `used` links).
+      items:
+        - type: str
+    - key: output
+      type: dict
+      description: Output of the preparation.
+      fields:
+        - key: output_sample_identifier
+          type: str
+          description: Identifier of the generated sample record.
+        - key: output_amount
+          type: float
+          unit: g
+          description: Mass obtained.
+        - key: output_volume
+          type: float
+          unit: mL
+          description: Volume obtained.
+        - key: yield
+          type: float
+          unit: "%"
+          range: {min: 0}
+          description: Yield relative to input.
+        - key: concentration_factor
+          type: float
+          range: {min: 0}
+          description: Enrichment factor (input volume / final volume) for extractions.
+    - key: blank_included
+      type: bool
+      default: false
+      description: A procedural blank was prepared alongside.
+    - key: replicates
+      type: int
+      range: {min: 1}
+      default: 1
+      description: Number of replicate preparations.
+    - key: notes
+      type: str
+      description: Observations and remarks.
+
+  # Full field list of the generic experiment; area packs reuse it.
+  experiment_core:
+    - key: experiment_class
+      type: str
+      required: true
+      options: [measurement, characterisation, performance test, durability / ageing test, monitoring campaign, calibration, simulation, other]
+      description: Class of experiment.
+    - key: technique
+      type: str
+      required: true
+      description: Technique (e.g. X-ray diffraction, LC-MS/MS, power quality analysis).
+      term: https://schema.org/measurementTechnique
+    - key: technique_term
+      type: str
+      iri: true
+      description: Ontology IRI of the technique, if known.
+    - use: activity_header
+    - key: instrument_identifier
+      type: str
+      description: Identifier of the instrument record (also a `measured_on` link).
+    - key: sample_identifiers
+      type: list
+      description: Identifiers of the samples measured (also `used` links).
+      items:
+        - type: str
+    - key: method
+      type: dict
+      description: Method / procedure followed (also a `follows_plan` link).
+      fields:
+        - key: method_identifier
+          type: str
+          description: Identifier of the method record.
+        - key: version
+          type: str
+          description: Version used.
+        - key: deviations
+          type: str
+          description: Deviations from the method.
+    - key: instrument_settings
+      type: dict
+      description: Generic acquisition settings; technique blocks hold the specific ones.
+      fields:
+        - key: mode
+          type: str
+          description: Operating mode / configuration.
+        - key: method_file
+          type: str
+          description: Instrument method / recipe file name.
+        - key: software
+          type: str
+          description: Acquisition software and version.
+          term: https://schema.org/softwareVersion
+    - key: ambient
+      type: dict
+      description: Ambient conditions.
+      use: ambient_conditions
+    - key: sequence
+      type: dict
+      description: Position of the measurement in a run / sequence.
+      fields:
+        - key: sequence_name
+          type: str
+          description: Name of the run / batch / sequence.
+        - key: position
+          type: int
+          range: {min: 1}
+          description: Position within the sequence.
+        - key: replicates
+          type: int
+          range: {min: 1}
+          default: 1
+          description: Number of replicate measurements.
+        - key: calibration_included
+          type: bool
+          default: false
+          description: Calibration standards were measured in the same sequence.
+        - key: qc_samples_included
+          type: bool
+          default: false
+          description: QC samples / blanks were included.
+    - key: data
+      type: dict
+      description: Where the primary data went.
+      fields:
+        - key: raw_data_identifier
+          type: str
+          description: Identifier of the raw-data record.
+        - key: raw_data_format
+          type: str
+          description: Native format of the raw data.
+          term: https://schema.org/encodingFormat
+        - key: data_volume
+          type: float
+          unit: MB
+          description: Approximate size of the raw data.
+    - use: quality_control
+    - key: notes
+      type: str
+      description: Observations and remarks.

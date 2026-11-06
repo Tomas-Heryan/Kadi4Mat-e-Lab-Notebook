@@ -1,0 +1,529 @@
+# Area 1 – Environmental Electricity & Engineering
+# Technique blocks (fieldsets) + specialised record templates + publishable extras
+# templates ("sub-templates" scientists can insert into any record in the web UI).
+schema_version: 1
+
+fieldsets:
+
+  device_under_test:
+    - key: device_type
+      type: str
+      required: true
+      options: [PV module, PV inverter, battery cell, battery module / pack, supercapacitor, electric motor / drive, power converter, charger (EV / battery), transformer, LED luminaire, household appliance, sensor / meter, cable / connector, heat pump, other]
+      description: Type of device under test.
+    - key: dut_manufacturer
+      type: str
+      description: Manufacturer of the device under test.
+      term: https://schema.org/manufacturer
+    - key: dut_model
+      type: str
+      description: Model / type designation.
+      term: https://schema.org/model
+    - key: dut_serial_number
+      type: str
+      description: Serial number.
+      term: https://schema.org/serialNumber
+    - key: ratings
+      type: dict
+      description: Nameplate ratings.
+      fields:
+        - key: rated_voltage
+          type: float
+          unit: V
+          description: Rated voltage.
+          term: http://qudt.org/vocab/quantitykind/Voltage
+        - key: rated_current
+          type: float
+          unit: A
+          description: Rated current.
+          term: http://qudt.org/vocab/quantitykind/ElectricCurrent
+        - key: rated_power
+          type: float
+          unit: W
+          description: Rated power.
+          term: http://qudt.org/vocab/quantitykind/Power
+        - key: rated_frequency
+          type: float
+          unit: Hz
+          description: Rated frequency (AC devices).
+          term: http://qudt.org/vocab/quantitykind/Frequency
+        - key: rated_capacity
+          type: float
+          unit: Ah
+          description: Rated capacity (storage devices).
+        - key: phases
+          type: str
+          options: [DC, 1-phase AC, 3-phase AC]
+          description: Supply type.
+    - key: firmware_version
+      type: str
+      description: Firmware / software version of the device, if applicable.
+      term: https://schema.org/softwareVersion
+    - key: condition
+      type: str
+      options: [new, used, aged artificially, aged in field, repaired, end of life]
+      description: Condition of the device when received.
+
+  electrical_test_setup:
+    - key: test_setup
+      type: dict
+      description: Electrical test setup.
+      fields:
+        - key: test_standard
+          type: str
+          description: Standard the test follows (e.g. IEC 61000-4-30, IEC 61215, IEC 62660-1).
+        - key: supply_voltage
+          type: float
+          unit: V
+          description: Supply / test voltage.
+          term: http://qudt.org/vocab/quantitykind/Voltage
+        - key: supply_frequency
+          type: float
+          unit: Hz
+          description: Supply frequency.
+          term: http://qudt.org/vocab/quantitykind/Frequency
+        - key: supply_type
+          type: str
+          options: [grid, grid simulator, DC source, PV simulator, battery, generator]
+          description: Source feeding the test.
+        - key: load_type
+          type: str
+          options: [resistive, inductive, capacitive, electronic load, motor, real appliance, none]
+          description: Load connected during the test.
+        - key: sampling_rate
+          type: float
+          unit: Hz
+          description: Sampling rate of the measurement.
+          term: http://qudt.org/vocab/quantitykind/Frequency
+        - key: measurement_duration
+          type: float
+          unit: min
+          description: Duration of the recording.
+          term: http://qudt.org/vocab/quantitykind/Time
+        - key: measured_quantities
+          type: list
+          description: Quantities recorded.
+          items:
+            - type: str
+              options: [voltage RMS, current RMS, active power, reactive power, apparent power, power factor, frequency, energy, harmonics, flicker, unbalance, temperature, irradiance, state of charge]
+        - key: wiring
+          type: str
+          description: Wiring / connection scheme (e.g. 3P4W, Aron, 4-wire Kelvin).
+        - key: current_sensors
+          type: str
+          description: Current sensors / clamps used (type, ratio).
+
+  power_quality_analysis:
+    - key: power_quality
+      type: dict
+      description: Power quality indices according to IEC 61000-4-30 / EN 50160.
+      fields:
+        - key: measurement_class
+          type: str
+          options: [class A, class S, class B, not classified]
+          description: IEC 61000-4-30 measurement class of the analyser.
+        - key: aggregation_interval
+          type: int
+          unit: s
+          default: 600
+          description: Aggregation interval of the indices (600 s = 10 min per EN 50160).
+        - key: voltage_thd
+          type: float
+          unit: "%"
+          range: {min: 0}
+          description: Total harmonic distortion of voltage.
+        - key: current_thd
+          type: float
+          unit: "%"
+          range: {min: 0}
+          description: Total harmonic distortion of current.
+        - key: harmonics_up_to_order
+          type: int
+          range: {min: 2, max: 50}
+          default: 50
+          description: Highest harmonic order evaluated.
+        - key: flicker_pst
+          type: float
+          range: {min: 0}
+          description: Short-term flicker severity Pst (max).
+        - key: flicker_plt
+          type: float
+          range: {min: 0}
+          description: Long-term flicker severity Plt (max).
+        - key: voltage_unbalance
+          type: float
+          unit: "%"
+          range: {min: 0}
+          description: Negative-sequence voltage unbalance.
+        - key: frequency_deviation_max
+          type: float
+          unit: Hz
+          description: Maximum deviation from nominal frequency.
+        - key: events
+          type: dict
+          description: Voltage events counted during the recording.
+          fields:
+            - key: dips
+              type: int
+              range: {min: 0}
+              description: Number of voltage dips.
+            - key: swells
+              type: int
+              range: {min: 0}
+              description: Number of voltage swells.
+            - key: interruptions
+              type: int
+              range: {min: 0}
+              description: Number of interruptions.
+        - key: en50160_compliant
+          type: bool
+          description: Supply voltage characteristics within EN 50160 limits.
+
+  pv_module_test:
+    - key: pv_test
+      type: dict
+      description: Photovoltaic module / cell I-V characterisation.
+      fields:
+        - key: technology
+          type: str
+          options: [mono-Si, multi-Si, PERC, TOPCon, HJT, CdTe, CIGS, perovskite, organic, tandem, other]
+          description: PV technology.
+        - key: test_conditions
+          type: str
+          options: [STC (1000 W/m², 25 °C, AM1.5), NOCT, low irradiance 200 W/m², outdoor, other]
+          description: Test condition set.
+        - key: irradiance
+          type: float
+          unit: "W/m²"
+          range: {min: 0}
+          description: Irradiance in the module plane.
+          term: http://qudt.org/vocab/quantitykind/Irradiance
+        - key: module_temperature
+          type: float
+          unit: "°C"
+          description: Module / cell temperature.
+          term: http://qudt.org/vocab/quantitykind/Temperature
+        - key: spectrum
+          type: str
+          options: [AM1.5G simulator class AAA, AM1.5G simulator class ABA, natural sunlight, other]
+          description: Light spectrum used.
+        - key: module_area
+          type: float
+          unit: "m²"
+          description: Aperture / total module area used for efficiency.
+          term: http://qudt.org/vocab/quantitykind/Area
+        - key: isc
+          type: float
+          unit: A
+          description: Short-circuit current.
+        - key: voc
+          type: float
+          unit: V
+          description: Open-circuit voltage.
+        - key: impp
+          type: float
+          unit: A
+          description: Current at maximum power point.
+        - key: vmpp
+          type: float
+          unit: V
+          description: Voltage at maximum power point.
+        - key: pmax
+          type: float
+          unit: W
+          description: Maximum power.
+        - key: fill_factor
+          type: float
+          unit: "%"
+          range: {min: 0, max: 100}
+          description: Fill factor.
+        - key: efficiency
+          type: float
+          unit: "%"
+          range: {min: 0, max: 100}
+          description: Conversion efficiency.
+        - key: correction_procedure
+          type: str
+          options: [IEC 60891 procedure 1, IEC 60891 procedure 2, IEC 60891 procedure 3, none]
+          description: Temperature / irradiance correction applied.
+        - key: sweep_direction
+          type: str
+          options: [Isc to Voc, Voc to Isc, both (hysteresis check)]
+          description: I-V sweep direction.
+
+  battery_cycling_test:
+    - key: battery_test
+      type: dict
+      description: Electrochemical cycling of a cell / module.
+      fields:
+        - key: cell_chemistry
+          type: str
+          options: [LFP, NMC, NCA, LCO, LMO, LTO, Na-ion, lead-acid, Ni-MH, solid-state, supercapacitor, other]
+          description: Cell chemistry.
+        - key: nominal_capacity
+          type: float
+          unit: Ah
+          description: Nominal capacity.
+        - key: nominal_voltage
+          type: float
+          unit: V
+          description: Nominal voltage.
+        - key: charge_c_rate
+          type: float
+          range: {min: 0}
+          description: Charge rate (C).
+        - key: discharge_c_rate
+          type: float
+          range: {min: 0}
+          description: Discharge rate (C).
+        - key: voltage_window
+          type: dict
+          description: Cut-off voltages.
+          fields:
+            - key: lower
+              type: float
+              unit: V
+              description: Lower cut-off voltage.
+            - key: upper
+              type: float
+              unit: V
+              description: Upper cut-off voltage.
+        - key: charge_protocol
+          type: str
+          options: [CC, CC-CV, pulse, drive cycle profile, other]
+          description: Charging protocol.
+        - key: cv_cutoff_current
+          type: float
+          unit: A
+          description: Current cut-off of the CV phase.
+        - key: test_temperature
+          type: float
+          unit: "°C"
+          description: Chamber / ambient temperature.
+          term: http://qudt.org/vocab/quantitykind/Temperature
+        - key: cycle_count
+          type: int
+          range: {min: 0}
+          description: Number of cycles performed.
+        - key: capacity_retention
+          type: float
+          unit: "%"
+          range: {min: 0}
+          description: Capacity retention at the end of the test.
+        - key: coulombic_efficiency
+          type: float
+          unit: "%"
+          range: {min: 0, max: 110}
+          description: Mean coulombic efficiency.
+        - key: internal_resistance
+          type: float
+          unit: "mΩ"
+          description: DC internal resistance (method in notes).
+        - key: end_of_test_criterion
+          type: str
+          description: Criterion that ended the test (cycles, SoH < 80 %, failure, ...).
+
+  energy_consumption_monitoring:
+    - key: energy_monitoring
+      type: dict
+      description: Energy consumption measurement of a device or process.
+      fields:
+        - key: monitored_item
+          type: str
+          required: true
+          description: What was monitored (device, reactor, lamp, process).
+        - key: meter
+          type: str
+          description: Energy meter / power analyser used (also a `measured_on` link).
+        - key: logging_interval
+          type: float
+          unit: s
+          description: Logging interval.
+          term: http://qudt.org/vocab/quantitykind/Time
+        - key: duration
+          type: float
+          unit: h
+          description: Monitoring duration.
+          term: http://qudt.org/vocab/quantitykind/Time
+        - key: energy_consumed
+          type: float
+          unit: kWh
+          range: {min: 0}
+          description: Energy consumed over the duration.
+          term: http://qudt.org/vocab/quantitykind/Energy
+        - key: average_power
+          type: float
+          unit: W
+          description: Average active power.
+          term: http://qudt.org/vocab/quantitykind/Power
+        - key: peak_power
+          type: float
+          unit: W
+          description: Peak active power.
+        - key: standby_power
+          type: float
+          unit: W
+          description: Standby power, if measured.
+        - key: power_factor
+          type: float
+          range: {min: 0, max: 1}
+          description: Mean power factor.
+        - key: specific_energy
+          type: float
+          unit: kWh/kg
+          description: Specific energy per unit of product / treated mass, if applicable.
+        - key: specific_energy_basis
+          type: str
+          description: Basis of the specific energy (e.g. per kg of catalyst, per m³ treated water).
+
+templates:
+
+  # ------------------------------------------------------------------ specialised record templates
+  - identifier: tmpl-sample-device-under-test
+    kind: record
+    title: Sample – device under test (DUT)
+    description: A device under test treated as a sample, with nameplate ratings and condition.
+    record:
+      type: sample
+      title: "<device type> <manufacturer> <model> – DUT <sample id>"
+      tags: [sample, device-under-test, area-1]
+      collections: [area-1-electrical-engineering]
+    fields:
+      - key: sample_id
+        type: str
+        required: true
+        description: Laboratory sample code (as on the label).
+        term: https://schema.org/identifier
+      - key: sample_class
+        type: str
+        required: true
+        default: device under test
+        options: [device under test]
+        description: Class of the sample.
+      - key: matrix
+        type: str
+        required: true
+        default: electrical device
+        description: Material / matrix (kept for consistency with other samples).
+      - key: dut
+        type: dict
+        description: Device under test.
+        use: device_under_test
+      - key: receipt
+        type: dict
+        description: Receipt in the laboratory.
+        fields:
+          - key: received_at
+            type: date
+            description: Date and time of receipt.
+          - key: received_by
+            type: str
+            description: Person who received the device.
+      - key: lifecycle_status
+        type: str
+        required: true
+        default: received
+        options: [planned, received, under test, tested, returned, archived, disposed]
+        description: Lifecycle status.
+      - key: notes
+        type: str
+        description: Any remarks.
+
+  - identifier: tmpl-exp-power-quality
+    kind: record
+    title: Experiment – power quality analysis
+    description: Power quality recording (IEC 61000-4-30 / EN 50160) on a power analyser.
+    record:
+      type: experiment
+      title: "Power quality analysis – <site / DUT> – <date>"
+      tags: [experiment, power-quality, area-1]
+      collections: [area-1-electrical-engineering]
+    fields:
+      - use: experiment_core
+      - use: electrical_test_setup
+      - use: power_quality_analysis
+
+  - identifier: tmpl-exp-pv-module-test
+    kind: record
+    title: Experiment – PV module / cell I-V test
+    description: I-V characterisation of a photovoltaic module or cell under defined conditions.
+    record:
+      type: experiment
+      title: "PV I-V test – <module id> – <date>"
+      tags: [experiment, photovoltaics, area-1]
+      collections: [area-1-electrical-engineering]
+    fields:
+      - use: experiment_core
+      - use: electrical_test_setup
+      - use: pv_module_test
+
+  - identifier: tmpl-exp-battery-cycling
+    kind: record
+    title: Experiment – battery cycling test
+    description: Cycling / ageing test of a cell or module on a battery tester.
+    record:
+      type: experiment
+      title: "Battery cycling – <cell id> – <date>"
+      tags: [experiment, battery, area-1]
+      collections: [area-1-electrical-engineering]
+    fields:
+      - use: experiment_core
+      - use: electrical_test_setup
+      - use: battery_cycling_test
+
+  - identifier: tmpl-exp-energy-monitoring
+    kind: record
+    title: Experiment – energy consumption monitoring
+    description: Energy consumption measurement of a device or laboratory process (e.g. a UV reactor).
+    record:
+      type: experiment
+      title: "Energy monitoring – <monitored item> – <date>"
+      tags: [experiment, energy, area-1]
+      collections: [area-1-electrical-engineering]
+    fields:
+      - use: experiment_core
+      - use: electrical_test_setup
+      - use: energy_consumption_monitoring
+
+  # ------------------------------------------------------------------ extras templates (UI building blocks)
+  - identifier: xtr-device-under-test
+    kind: extras
+    title: Block – device under test
+    description: Insert into any sample record that represents an electrical device under test.
+    fields:
+      - use: device_under_test
+
+  - identifier: xtr-electrical-test-setup
+    kind: extras
+    title: Block – electrical test setup
+    description: Supply, load, sampling and wiring of an electrical measurement.
+    fields:
+      - use: electrical_test_setup
+
+  - identifier: xtr-power-quality-analysis
+    kind: extras
+    title: Block – power quality indices
+    description: IEC 61000-4-30 / EN 50160 indices.
+    fields:
+      - use: power_quality_analysis
+
+  - identifier: xtr-pv-module-test
+    kind: extras
+    title: Block – PV module I-V test
+    description: I-V parameters of a photovoltaic module or cell.
+    fields:
+      - use: pv_module_test
+
+  - identifier: xtr-battery-cycling-test
+    kind: extras
+    title: Block – battery cycling test
+    description: Cycling parameters and ageing results.
+    fields:
+      - use: battery_cycling_test
+
+  - identifier: xtr-energy-consumption-monitoring
+    kind: extras
+    title: Block – energy consumption monitoring
+    description: Energy and power figures of a monitored device or process.
+    fields:
+      - use: energy_consumption_monitoring

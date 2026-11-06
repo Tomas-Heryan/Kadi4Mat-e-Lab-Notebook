@@ -1,0 +1,320 @@
+# Reusable blocks of fields ("fieldsets"). A template field can insert a fieldset with
+#   - use: <fieldset name>                  (fields inserted inline)
+#   - {key: block_name, type: dict, use: <fieldset name>}   (fields nested in a dict)
+# Keys are English snake_case; "description" is the human-readable label/help text shown
+# in Kadi; "term" is an ontology IRI; "unit" only on int/float fields.
+schema_version: 1
+
+fieldsets:
+
+  # ---------------------------------------------------------------- who / when of an activity
+  activity_header:
+    - key: performed_by
+      type: str
+      required: true
+      description: Person who carried out the activity (name as in the lab records).
+      term: https://schema.org/agent
+    - key: started_at
+      type: date
+      required: true
+      description: Start of the activity (date and time with time zone).
+      term: http://www.w3.org/ns/prov#startedAtTime
+    - key: ended_at
+      type: date
+      description: End of the activity (date and time with time zone).
+      term: http://www.w3.org/ns/prov#endedAtTime
+    - key: laboratory
+      type: str
+      description: Laboratory / room where the activity took place.
+      term: https://schema.org/location
+    - key: status
+      type: str
+      required: true
+      default: completed
+      options: [planned, running, completed, aborted, failed]
+      description: Lifecycle status of the activity.
+
+  # ---------------------------------------------------------------- ambient conditions
+  ambient_conditions:
+    - key: temperature
+      type: float
+      unit: "°C"
+      description: Ambient temperature during the activity.
+      term: http://qudt.org/vocab/quantitykind/Temperature
+    - key: relative_humidity
+      type: float
+      unit: "%"
+      range: {min: 0, max: 100}
+      description: Ambient relative humidity.
+      term: http://qudt.org/vocab/quantitykind/RelativeHumidity
+    - key: pressure
+      type: float
+      unit: hPa
+      description: Ambient pressure.
+      term: http://qudt.org/vocab/quantitykind/Pressure
+    - key: atmosphere
+      type: str
+      options: [air, nitrogen, argon, vacuum, controlled humidity, other]
+      description: Atmosphere in which the activity took place.
+
+  # ---------------------------------------------------------------- asset identification
+  asset_identity:
+    - key: manufacturer
+      type: str
+      required: true
+      description: Manufacturer of the device / equipment.
+      term: https://schema.org/manufacturer
+    - key: model
+      type: str
+      required: true
+      description: Model designation.
+      term: https://schema.org/model
+    - key: serial_number
+      type: str
+      description: Manufacturer serial number.
+      term: https://schema.org/serialNumber
+    - key: inventory_number
+      type: str
+      description: VSB-TUO inventory (asset) number.
+      term: https://schema.org/identifier
+    - key: year_of_manufacture
+      type: int
+      range: {min: 1950, max: 2100}
+      description: Year the device was manufactured.
+    - key: commissioning_date
+      type: date
+      description: Date the device was put into service at CEET.
+    - key: status
+      type: str
+      required: true
+      default: in service
+      options: [in service, limited operation, under maintenance, out of service, decommissioned]
+      description: Operational status.
+    - key: responsible_person
+      type: str
+      required: true
+      description: Person responsible for the device (operator contact).
+      term: https://schema.org/accountablePerson
+    - key: contact_email
+      type: str
+      description: Contact e-mail of the responsible person or lab.
+      term: https://schema.org/email
+    - key: location
+      type: dict
+      description: Where the device is installed.
+      fields:
+        - key: building
+          type: str
+          description: Building (e.g. CPIT TL3).
+        - key: room
+          type: str
+          description: Room number.
+        - key: site
+          type: str
+          default: VSB-TUO campus Ostrava-Poruba
+          description: Site / campus.
+
+  # ---------------------------------------------------------------- maintenance & calibration
+  maintenance_calibration:
+    - key: calibration
+      type: dict
+      description: Calibration regime of the device.
+      fields:
+        - key: requires_calibration
+          type: bool
+          default: true
+          description: Whether the device is subject to periodic calibration.
+        - key: last_calibration_date
+          type: date
+          description: Date of the last calibration.
+        - key: calibration_interval
+          type: int
+          unit: month
+          range: {min: 1}
+          description: Calibration interval.
+        - key: calibration_certificate
+          type: str
+          description: Reference (number or IRI) of the current calibration certificate.
+        - key: calibrated_by
+          type: str
+          description: Calibration laboratory or person.
+    - key: maintenance
+      type: dict
+      description: Maintenance regime.
+      fields:
+        - key: last_maintenance_date
+          type: date
+          description: Date of the last maintenance / service.
+        - key: maintenance_interval
+          type: int
+          unit: month
+          range: {min: 1}
+          description: Planned maintenance interval.
+        - key: service_contract
+          type: str
+          description: Service contract reference or provider.
+    - key: accredited_use
+      type: bool
+      default: false
+      description: Device is used for accredited measurements (CSN EN ISO/IEC 17025).
+
+  # ---------------------------------------------------------------- software on a device
+  software_block:
+    - key: software
+      type: dict
+      description: Control / acquisition software of the device.
+      fields:
+        - key: name
+          type: str
+          description: Software name.
+          term: https://schema.org/softwareApplication
+        - key: version
+          type: str
+          description: Software version.
+          term: https://schema.org/softwareVersion
+        - key: data_format
+          type: str
+          description: Native data format(s) written by the software.
+          term: https://schema.org/encodingFormat
+
+  # ---------------------------------------------------------------- geographic origin
+  geo_origin:
+    - key: site_name
+      type: str
+      description: Name of the sampling site / origin.
+      term: https://schema.org/name
+    - key: latitude
+      type: float
+      unit: "°"
+      range: {min: -90, max: 90}
+      description: WGS84 latitude of the sampling point.
+      term: https://schema.org/latitude
+    - key: longitude
+      type: float
+      unit: "°"
+      range: {min: -180, max: 180}
+      description: WGS84 longitude of the sampling point.
+      term: https://schema.org/longitude
+    - key: altitude
+      type: float
+      unit: m
+      description: Altitude above sea level.
+      term: https://schema.org/elevation
+    - key: site_description
+      type: str
+      description: Free-text description of the origin (plant, stream, stack, reactor, ...).
+
+  # ---------------------------------------------------------------- quality control
+  quality_control:
+    - key: qc_status
+      type: str
+      required: true
+      default: pending
+      options: [pending, passed, passed with remarks, failed, not applicable]
+      description: Outcome of the quality control for this record.
+    - key: qc_checked_by
+      type: str
+      description: Person who performed the QC check.
+    - key: qc_notes
+      type: str
+      description: QC remarks, deviations, corrective actions.
+
+  # ---------------------------------------------------------------- file integrity list
+  data_files:
+    - key: files
+      type: list
+      description: Files belonging to this data set with integrity information (SHA-256).
+      items:
+        - type: dict
+          fields:
+            - key: name
+              type: str
+              required: true
+              description: File name as stored in Kadi.
+              term: https://schema.org/name
+            - key: sha256
+              type: str
+              required: true
+              description: SHA-256 hex digest of the file content.
+              term: https://schema.org/sha256
+            - key: size_bytes
+              type: int
+              unit: B
+              range: {min: 0}
+              description: File size in bytes.
+              term: https://schema.org/contentSize
+            - key: mimetype
+              type: str
+              description: Media type.
+              term: https://schema.org/encodingFormat
+
+  # ---------------------------------------------------------------- consumed reagents / materials
+  reagents_used:
+    - key: reagents
+      type: list
+      description: Reagents, solvents, precursors or consumables used (one entry each).
+      items:
+        - type: dict
+          fields:
+            - key: name
+              type: str
+              required: true
+              description: Reagent name.
+            - key: material_record
+              type: str
+              description: Identifier of the material record in Kadi (also expressed as a 'used' link).
+            - key: lot_number
+              type: str
+              description: Lot / batch number.
+            - key: amount
+              type: float
+              unit: g
+              description: Amount used (mass); use 'volume' for liquids.
+            - key: volume
+              type: float
+              unit: mL
+              description: Volume used.
+            - key: concentration
+              type: float
+              unit: mol/L
+              description: Concentration if a solution was used.
+
+  # ---------------------------------------------------------------- generic process parameters
+  process_parameters:
+    - key: parameters
+      type: dict
+      description: Process parameters of the step.
+      fields:
+        - key: temperature
+          type: float
+          unit: "°C"
+          description: Process temperature.
+          term: http://qudt.org/vocab/quantitykind/Temperature
+        - key: duration
+          type: float
+          unit: min
+          range: {min: 0}
+          description: Duration of the step.
+          term: http://qudt.org/vocab/quantitykind/Time
+        - key: pressure
+          type: float
+          unit: bar
+          description: Process pressure (absolute).
+          term: http://qudt.org/vocab/quantitykind/Pressure
+        - key: ph
+          type: float
+          range: {min: 0, max: 14}
+          description: pH during the step.
+          term: http://qudt.org/vocab/quantitykind/PH
+        - key: stirring_speed
+          type: int
+          unit: rpm
+          range: {min: 0}
+          description: Stirring / rotation speed.
+        - key: atmosphere
+          type: str
+          options: [air, nitrogen, argon, oxygen, vacuum, hydrogen-argon, other]
+          description: Process atmosphere.
+        - key: solvent
+          type: str
+          description: Main solvent / medium.

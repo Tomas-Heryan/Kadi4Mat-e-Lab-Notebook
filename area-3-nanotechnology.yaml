@@ -1,0 +1,541 @@
+# Area 3 – Environmental Nanotechnology
+schema_version: 1
+
+fieldsets:
+
+  nanomaterial_synthesis:
+    - key: synthesis
+      type: dict
+      description: Synthesis of a (nano)material.
+      fields:
+        - key: route
+          type: str
+          required: true
+          options: [sol-gel, hydrothermal, solvothermal, co-precipitation, microwave-assisted, green synthesis (plant extract), chemical reduction, CVD / PVD, electrospinning, ball milling, flame spray pyrolysis, template-assisted, impregnation, other]
+          description: Synthesis route.
+        - key: target_material
+          type: str
+          required: true
+          description: Target material / composition (e.g. anatase TiO2, Ag/TiO2 1 wt%, ZnO nanorods).
+        - key: dopant_or_modifier
+          type: str
+          description: Dopant, co-catalyst or surface modifier with nominal loading.
+        - key: reaction
+          type: dict
+          description: Reaction step.
+          fields:
+            - key: temperature
+              type: float
+              unit: "°C"
+              description: Reaction temperature.
+              term: http://qudt.org/vocab/quantitykind/Temperature
+            - key: time
+              type: float
+              unit: h
+              range: {min: 0}
+              description: Reaction time.
+              term: http://qudt.org/vocab/quantitykind/Time
+            - key: ph
+              type: float
+              range: {min: 0, max: 14}
+              description: pH of the reaction mixture.
+              term: http://qudt.org/vocab/quantitykind/PH
+            - key: stirring_speed
+              type: int
+              unit: rpm
+              description: Stirring speed.
+            - key: atmosphere
+              type: str
+              options: [air, nitrogen, argon, hydrogen-argon, vacuum, other]
+              description: Atmosphere.
+            - key: vessel
+              type: str
+              description: Vessel / autoclave (also an equipment `used` link).
+        - key: ageing_time
+          type: float
+          unit: h
+          range: {min: 0}
+          description: Ageing time of the gel / precipitate.
+        - key: washing
+          type: str
+          description: Washing procedure (solvent, cycles, centrifugation).
+        - key: drying
+          type: dict
+          description: Drying step.
+          fields:
+            - key: method
+              type: str
+              options: [oven, vacuum oven, freeze drying, supercritical, air drying, spray drying, none]
+              description: Drying method.
+            - key: temperature
+              type: float
+              unit: "°C"
+              description: Drying temperature.
+            - key: time
+              type: float
+              unit: h
+              description: Drying time.
+        - key: calcination
+          type: dict
+          description: Calcination / annealing step.
+          fields:
+            - key: temperature
+              type: float
+              unit: "°C"
+              description: Calcination temperature.
+              term: http://qudt.org/vocab/quantitykind/Temperature
+            - key: heating_rate
+              type: float
+              unit: K/min
+              description: Heating rate.
+            - key: dwell_time
+              type: float
+              unit: h
+              description: Dwell time at temperature.
+            - key: atmosphere
+              type: str
+              options: [air, nitrogen, argon, hydrogen-argon, oxygen, vacuum, other]
+              description: Atmosphere.
+            - key: furnace
+              type: str
+              description: Furnace used (also an equipment `used` link).
+        - key: yield_mass
+          type: float
+          unit: g
+          range: {min: 0}
+          description: Mass of product obtained.
+        - key: appearance
+          type: str
+          description: Appearance of the product (colour, texture).
+
+  particle_size_zeta:
+    - key: dls_zeta
+      type: dict
+      description: Dynamic / electrophoretic light scattering.
+      fields:
+        - key: dispersant
+          type: str
+          description: Dispersant medium (e.g. deionised water, 10 mM NaCl).
+        - key: concentration
+          type: float
+          unit: mg/L
+          description: Particle concentration in the dispersion.
+        - key: ph
+          type: float
+          range: {min: 0, max: 14}
+          description: pH of the dispersion.
+          term: http://qudt.org/vocab/quantitykind/PH
+        - key: temperature
+          type: float
+          unit: "°C"
+          default: 25
+          description: Measurement temperature.
+          term: http://qudt.org/vocab/quantitykind/Temperature
+        - key: sonication
+          type: dict
+          description: Dispersion by ultrasound before measurement.
+          fields:
+            - key: time
+              type: float
+              unit: min
+              description: Sonication time.
+            - key: power
+              type: float
+              unit: W
+              description: Sonication power.
+        - key: measurement_angle
+          type: float
+          unit: "°"
+          default: 173
+          description: Scattering angle.
+        - key: number_of_runs
+          type: int
+          range: {min: 1}
+          description: Number of runs averaged.
+        - key: z_average_diameter
+          type: float
+          unit: nm
+          description: Z-average hydrodynamic diameter.
+          term: http://qudt.org/vocab/quantitykind/Diameter
+        - key: polydispersity_index
+          type: float
+          range: {min: 0, max: 1}
+          description: Polydispersity index.
+        - key: zeta_potential
+          type: float
+          unit: mV
+          description: Zeta potential.
+        - key: conductivity
+          type: float
+          unit: mS/cm
+          description: Dispersion conductivity.
+
+  gas_adsorption_bet:
+    - key: bet
+      type: dict
+      description: Gas physisorption (BET surface area and porosity).
+      fields:
+        - key: adsorptive
+          type: str
+          required: true
+          default: N2 at 77 K
+          options: [N2 at 77 K, Ar at 87 K, CO2 at 273 K, Kr at 77 K]
+          description: Adsorptive gas and temperature.
+        - key: degassing
+          type: dict
+          description: Degassing of the sample.
+          fields:
+            - key: temperature
+              type: float
+              unit: "°C"
+              description: Degassing temperature.
+            - key: time
+              type: float
+              unit: h
+              description: Degassing time.
+            - key: mode
+              type: str
+              options: [vacuum, flowing N2, flowing He]
+              description: Degassing mode.
+        - key: sample_mass
+          type: float
+          unit: mg
+          description: Sample mass after degassing.
+        - key: relative_pressure_range_bet
+          type: str
+          default: 0.05–0.30
+          description: p/p0 range used for the BET fit.
+        - key: bet_surface_area
+          type: float
+          unit: "m²/g"
+          range: {min: 0}
+          description: BET specific surface area.
+        - key: bet_c_constant
+          type: float
+          description: BET C constant.
+        - key: total_pore_volume
+          type: float
+          unit: "cm³/g"
+          description: Total pore volume (p/p0 ≈ 0.99).
+        - key: micropore_volume
+          type: float
+          unit: "cm³/g"
+          description: Micropore volume (t-plot / DR).
+        - key: mean_pore_diameter
+          type: float
+          unit: nm
+          description: Mean pore diameter.
+        - key: pore_size_model
+          type: str
+          options: [BJH adsorption, BJH desorption, DFT / NLDFT, t-plot, Dubinin-Radushkevich, HK]
+          description: Pore size model.
+        - key: isotherm_type
+          type: str
+          options: [I, II, III, IV(a), IV(b), V, VI]
+          description: IUPAC isotherm type.
+
+  photocatalytic_test:
+    - key: photocatalysis
+      type: dict
+      description: Photocatalytic activity test (used together with the batch treatment block).
+      fields:
+        - key: light_source
+          type: dict
+          description: Irradiation source.
+          fields:
+            - key: type
+              type: str
+              required: true
+              options: [UV-A LED, UV-A fluorescent lamp, UV-C lamp, Xe lamp solar simulator, visible LED, halogen lamp, natural sunlight, other]
+              description: Light source type.
+            - key: peak_wavelength
+              type: float
+              unit: nm
+              description: Peak / cut-off wavelength.
+              term: http://qudt.org/vocab/quantitykind/Wavelength
+            - key: electrical_power
+              type: float
+              unit: W
+              description: Electrical power of the lamp.
+            - key: irradiance_at_sample
+              type: float
+              unit: "mW/cm²"
+              description: Irradiance at the sample position.
+              term: http://qudt.org/vocab/quantitykind/Irradiance
+            - key: distance_to_sample
+              type: float
+              unit: cm
+              description: Lamp-to-liquid-surface distance.
+            - key: filter
+              type: str
+              description: Optical filter used (e.g. 420 nm cut-off).
+        - key: catalyst_loading
+          type: float
+          unit: g/L
+          range: {min: 0}
+          description: Catalyst concentration in suspension.
+        - key: dark_adsorption_time
+          type: float
+          unit: min
+          range: {min: 0}
+          description: Dark equilibration before irradiation.
+        - key: irradiation_time
+          type: float
+          unit: min
+          range: {min: 0}
+          description: Total irradiation time.
+        - key: oxidant_added
+          type: str
+          description: Additional oxidant (e.g. H2O2 10 mM), if any.
+        - key: degradation_efficiency
+          type: float
+          unit: "%"
+          range: {min: -100, max: 100}
+          description: Degradation of the target pollutant at the end of irradiation.
+        - key: apparent_rate_constant
+          type: float
+          unit: 1/min
+          description: Pseudo-first-order apparent rate constant.
+        - key: half_life
+          type: float
+          unit: min
+          description: Half-life derived from the kinetics.
+        - key: toc_removal
+          type: float
+          unit: "%"
+          description: Mineralisation measured as TOC removal.
+        - key: reference_catalyst
+          type: str
+          description: Reference catalyst run in parallel (e.g. TiO2 P25).
+        - key: reuse_cycle
+          type: int
+          range: {min: 1}
+          default: 1
+          description: Reuse cycle number of the catalyst (1 = fresh).
+
+  ecotoxicity_test:
+    - key: ecotoxicity
+      type: dict
+      description: Aquatic ecotoxicity test.
+      fields:
+        - key: test_organism
+          type: str
+          required: true
+          options: [Daphnia magna, Vibrio fischeri (Aliivibrio fischeri), Desmodesmus subspicatus, Raphidocelis subcapitata, Lemna minor, Danio rerio embryo, Sinapis alba, Thamnocephalus platyurus, other]
+          description: Test organism.
+        - key: standard
+          type: str
+          options: [OECD 202, ISO 6341, ISO 11348-3, OECD 201, ISO 8692, ISO 20079, OECD 236, ISO 18763, other]
+          description: Test guideline.
+        - key: exposure_time
+          type: float
+          unit: h
+          description: Exposure duration.
+          term: http://qudt.org/vocab/quantitykind/Time
+        - key: endpoint
+          type: str
+          options: [immobilisation, mortality, luminescence inhibition, growth inhibition, germination / root elongation, other]
+          description: Measured endpoint.
+        - key: concentrations_tested
+          type: list
+          description: Test concentrations.
+          items:
+            - type: float
+              unit: mg/L
+        - key: ec50
+          type: float
+          unit: mg/L
+          description: EC50 / LC50.
+        - key: ec50_confidence_interval
+          type: str
+          description: 95 % confidence interval of EC50 as text.
+        - key: noec
+          type: float
+          unit: mg/L
+          description: No observed effect concentration.
+        - key: loec
+          type: float
+          unit: mg/L
+          description: Lowest observed effect concentration.
+        - key: control_valid
+          type: bool
+          description: Validity criteria of the control met.
+        - key: dispersion_protocol
+          type: str
+          description: How the nanomaterial dispersion was prepared for the test.
+
+templates:
+
+  - identifier: tmpl-sample-nanomaterial
+    kind: record
+    title: Sample – synthesised (nano)material
+    description: A batch of synthesised material or nanomaterial with nominal composition and form.
+    record:
+      type: sample
+      title: "<sample id> – <material> (<route>)"
+      tags: [sample, nanomaterial, area-3]
+      collections: [area-3-nanotechnology]
+    fields:
+      - key: sample_id
+        type: str
+        required: true
+        description: Laboratory sample code.
+        term: https://schema.org/identifier
+      - key: sample_class
+        type: str
+        required: true
+        default: synthesised material
+        options: [synthesised material, commercial material]
+        description: Class of the sample.
+      - key: matrix
+        type: str
+        required: true
+        description: Material / nominal composition (e.g. TiO2 anatase, Ag/TiO2 1 wt%).
+      - key: nominal_composition
+        type: str
+        description: Nominal composition / stoichiometry.
+        term: https://schema.org/molecularFormula
+      - key: form
+        type: str
+        options: [powder, nanoparticle dispersion, thin film, coating on substrate, pellet, fibre mat, monolith, other]
+        description: Physical form.
+      - key: nominal_particle_size
+        type: float
+        unit: nm
+        description: Nominal / expected primary particle size.
+      - key: amount
+        type: float
+        unit: g
+        range: {min: 0}
+        description: Mass available.
+      - key: synthesis_identifier
+        type: str
+        description: Identifier of the synthesis preparation record (also a `was_generated_by` link).
+      - key: storage
+        type: dict
+        description: Storage.
+        fields:
+          - key: location
+            type: str
+            description: Storage location.
+          - key: conditions
+            type: str
+            options: [ambient, desiccator, inert atmosphere, dark, cooled, other]
+            description: Storage conditions.
+      - key: hazards
+        type: list
+        description: Hazards.
+        items:
+          - type: str
+            options: [none known, nanomaterial – inhalation hazard, toxic, oxidising, flammable, other]
+      - key: lifecycle_status
+        type: str
+        required: true
+        default: prepared
+        options: [planned, received, in preparation, prepared, under measurement, measured, archived, consumed, disposed]
+        description: Lifecycle status.
+      - key: notes
+        type: str
+        description: Any remarks.
+
+  - identifier: tmpl-prep-nanomaterial-synthesis
+    kind: record
+    title: Sample preparation – (nano)material synthesis
+    description: Synthesis of a (nano)material; the product is a new sample record linked with `was_generated_by`.
+    record:
+      type: sample-preparation
+      title: "Synthesis <route> – <target material> – <batch>"
+      tags: [sample-preparation, synthesis, area-3]
+      collections: [area-3-nanotechnology]
+    fields:
+      - use: sample_preparation_core
+      - use: nanomaterial_synthesis
+
+  - identifier: tmpl-exp-dls-zeta
+    kind: record
+    title: Experiment – particle size and zeta potential (DLS / ELS)
+    description: Hydrodynamic size distribution and zeta potential of a dispersion.
+    record:
+      type: experiment
+      title: "DLS / zeta – <sample id> – <date>"
+      tags: [experiment, dls, area-3]
+      collections: [area-3-nanotechnology]
+    fields:
+      - use: experiment_core
+      - use: particle_size_zeta
+
+  - identifier: tmpl-exp-bet
+    kind: record
+    title: Experiment – gas physisorption (BET)
+    description: Specific surface area and porosity by gas adsorption.
+    record:
+      type: experiment
+      title: "BET – <sample id> – <date>"
+      tags: [experiment, bet, area-3]
+      collections: [area-3-nanotechnology]
+    fields:
+      - use: experiment_core
+      - use: gas_adsorption_bet
+
+  - identifier: tmpl-exp-photocatalytic-test
+    kind: record
+    title: Experiment – photocatalytic degradation test
+    description: Batch photocatalytic test with irradiation; combines the treatment block with light-source and kinetic data.
+    record:
+      type: experiment
+      title: "Photocatalytic test – <catalyst> / <pollutant> – <run>"
+      tags: [experiment, photocatalysis, area-3]
+      collections: [area-3-nanotechnology]
+    fields:
+      - use: experiment_core
+      - use: batch_treatment_test
+      - use: photocatalytic_test
+
+  - identifier: tmpl-exp-ecotoxicity
+    kind: record
+    title: Experiment – aquatic ecotoxicity test
+    description: Standardised ecotoxicity test of a material, dispersion or treated water.
+    record:
+      type: experiment
+      title: "Ecotoxicity <organism> – <sample id> – <date>"
+      tags: [experiment, ecotoxicity, area-3]
+      collections: [area-3-nanotechnology]
+    fields:
+      - use: experiment_core
+      - use: ecotoxicity_test
+
+  # ------------------------------------------------------------------ extras templates
+  - identifier: xtr-nanomaterial-synthesis
+    kind: extras
+    title: Block – (nano)material synthesis
+    description: Route, reaction, ageing, washing, drying, calcination, yield.
+    fields:
+      - use: nanomaterial_synthesis
+
+  - identifier: xtr-particle-size-zeta
+    kind: extras
+    title: Block – DLS / zeta potential
+    description: Dispersion conditions and size / zeta results.
+    fields:
+      - use: particle_size_zeta
+
+  - identifier: xtr-gas-adsorption-bet
+    kind: extras
+    title: Block – gas physisorption (BET)
+    description: Degassing, adsorptive, BET area and porosity.
+    fields:
+      - use: gas_adsorption_bet
+
+  - identifier: xtr-photocatalytic-test
+    kind: extras
+    title: Block – photocatalytic test
+    description: Light source, catalyst loading, kinetics.
+    fields:
+      - use: photocatalytic_test
+
+  - identifier: xtr-ecotoxicity-test
+    kind: extras
+    title: Block – ecotoxicity test
+    description: Organism, guideline, exposure, EC50 / NOEC / LOEC.
+    fields:
+      - use: ecotoxicity_test

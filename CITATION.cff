@@ -1,0 +1,72 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below, and cite Kadi4Mat (see references)."
+type: software
+title: "Kadi Lab Manager - CEET edition"
+abstract: "Reproducible, declarative deployment of laboratory metadata structures (collections, templates, records, PROV-O links, files) into Kadi4Mat for the Centre for Energy and Environmental Technologies, VSB - Technical University of Ostrava."
+version: 1.0.1
+date-released: "2026-11-06"
+license: Apache-2.0
+repository-code: "https://github.com/Tomas-Heryan/Kadi4Mat-e-Lab-Notebook"
+authors:
+  - family-names: "Heryan"
+    given-names: "Tomas"
+    orcid: "https://orcid.org/0000-0003-2027-7149"
+    email: "tomas.heryan@vsb.cz"
+    affiliation: "Data Steward & Open Science, Centre for Energy and Environmental Technologies (CEET), VSB - Technical University of Ostrava"
+    city: "Ostrava"
+    country: "CZ"
+contact:
+  - family-names: "Heryan"
+    given-names: "Tomas"
+    orcid: "https://orcid.org/0000-0003-2027-7149"
+    email: "tomas.heryan@vsb.cz"
+    affiliation: "Data Steward & Open Science, Centre for Energy and Environmental Technologies (CEET), VSB - Technical University of Ostrava"
+    city: "Ostrava"
+    country: "CZ"
+keywords:
+  - Kadi4Mat
+  - research data management
+  - electronic lab notebook
+  - metadata
+  - PROV-O
+  - RO-Crate
+  - Zenodo
+references:
+  - type: article
+    title: "Kadi4Mat: A Research Data Infrastructure for Materials Science"
+    authors:
+      - family-names: Brandt
+        given-names: Nico
+      - family-names: Griem
+        given-names: Lars
+      - family-names: Herrmann
+        given-names: Christoph
+      - family-names: Schoof
+        given-names: Ephraim
+      - family-names: Tosato
+        given-names: Giovanna
+      - family-names: Zhao
+        given-names: Yinghan
+      - family-names: Zschumme
+        given-names: Philipp
+      - family-names: Selzer
+        given-names: Michael
+    journal: "Data Science Journal"
+    volume: 20
+    issue: 1
+    start: 8
+    year: 2021
+    doi: 10.5334/dsj-2021-008
+  - type: software
+    title: "Kadi4Mat"
+    authors:
+      - name: "Karlsruhe Institute of Technology"
+    repository-code: "https://gitlab.com/iam-cms/kadi"
+    url: "https://kadi.iam.kit.edu"
+    license: Apache-2.0
+  - type: software
+    title: "kadi-apy"
+    authors:
+      - name: "Karlsruhe Institute of Technology"
+    repository-code: "https://gitlab.com/iam-cms/kadi-apy"
+    license: Apache-2.0

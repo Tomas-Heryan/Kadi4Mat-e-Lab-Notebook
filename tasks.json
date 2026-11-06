@@ -1,0 +1,44 @@
+{
+  "version": "2.0.0",
+  "options": { "env": { "PYTHONPATH": "${workspaceFolder}/src", "PYTHONUTF8": "1" } },
+  "tasks": [
+    {
+      "label": "kadi: validate structure model",
+      "type": "shell",
+      "command": "python -m kadi_lab_manager validate model/ceet.yaml",
+      "problemMatcher": []
+    },
+    {
+      "label": "kadi: validate demo model",
+      "type": "shell",
+      "command": "python -m kadi_lab_manager validate model/demo.yaml",
+      "problemMatcher": []
+    },
+    {
+      "label": "kadi: compile payloads to build/",
+      "type": "shell",
+      "command": "python -m kadi_lab_manager compile model/ceet.yaml --out build",
+      "problemMatcher": []
+    },
+    {
+      "label": "kadi: plan structure model",
+      "type": "shell",
+      "command": "python -m kadi_lab_manager plan model/ceet.yaml",
+      "problemMatcher": []
+    },
+    {
+      "label": "kadi: run tests",
+      "type": "shell",
+      "command": "python -m unittest discover -s tests -v",
+      "group": { "kind": "test", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "kadi: start mock server (port 8443)",
+      "type": "shell",
+      "command": "python tests/mock_kadi.py 8443",
+      "isBackground": true,
+      "problemMatcher": []
+    }
+  ]
+}

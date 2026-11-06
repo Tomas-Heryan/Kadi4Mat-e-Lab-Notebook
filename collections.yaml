@@ -1,0 +1,72 @@
+# Organisational structure of CEET in Kadi4Mat.
+# Collections group records; they carry no metadata themselves (that is what the
+# project cover record is for). Parents are created before children.
+schema_version: 1
+
+collections:
+  - identifier: ceet
+    title: CEET – Centre for Energy and Environmental Technologies (VSB-TUO)
+    description: |
+      Root collection of the Centre for Energy and Environmental Technologies, VSB – Technical University of Ostrava.
+      Child collections: shared catalogues (instruments, equipment, materials, methods), the four scientific
+      areas and the projects. Managed by kadi-lab-manager from a versioned YAML model.
+    tags: [ceet, vsb-tuo]
+
+  - identifier: cat-instruments
+    title: Catalogue – instruments (measuring devices)
+    description: Every measuring device of CEET as one 'instrument' record. Experiments link to these records with 'measured_on'.
+    parent: ceet
+    record_template: tmpl-instrument
+    tags: [catalogue, instruments]
+
+  - identifier: cat-equipment
+    title: Catalogue – laboratory equipment
+    description: Auxiliary equipment (furnaces, mills, reactors, SPE manifolds, balances, ...). Preparations and experiments link to these records with 'used'.
+    parent: ceet
+    record_template: tmpl-equipment
+    tags: [catalogue, equipment]
+
+  - identifier: cat-materials
+    title: Catalogue – materials, reagents and reference materials
+    description: Chemicals, precursors, reference materials and consumable batches with lot numbers and safety information.
+    parent: ceet
+    record_template: tmpl-material
+    tags: [catalogue, materials]
+
+  - identifier: cat-methods
+    title: Catalogue – methods, protocols and SOPs
+    description: Versioned analytical methods, preparation protocols and test procedures. Activities link to these with 'follows_plan'.
+    parent: ceet
+    record_template: tmpl-method
+    tags: [catalogue, methods]
+
+  - identifier: area-1-electrical-engineering
+    title: Area 1 – Environmental Electricity & Engineering
+    description: Electrical measurements, energy systems, power quality, photovoltaics, storage and device testing.
+    parent: ceet
+    tags: [area-1, electrical-engineering]
+
+  - identifier: area-2-environmental-chemistry
+    title: Area 2 – Applied Chemistry in Waste Management, Water and Air Pollution
+    description: Environmental analytical chemistry of water, air and waste matrices; treatment and leaching tests.
+    parent: ceet
+    tags: [area-2, environmental-chemistry]
+
+  - identifier: area-3-nanotechnology
+    title: Area 3 – Environmental Nanotechnology
+    description: Synthesis, characterisation and application of nanomaterials for environmental technologies.
+    parent: ceet
+    tags: [area-3, nanotechnology]
+
+  - identifier: area-4-functional-materials
+    title: Area 4 – Development of New Functional Materials
+    description: Synthesis, processing and characterisation of new functional materials.
+    parent: ceet
+    tags: [area-4, functional-materials]
+
+  - identifier: projects
+    title: Projects
+    description: One child collection per research project; each project also has a 'project' cover record with funding and people.
+    parent: ceet
+    record_template: tmpl-project
+    tags: [projects]

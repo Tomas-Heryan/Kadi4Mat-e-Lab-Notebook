@@ -1,0 +1,6 @@
+# SYNTHETIC demo data - pseudo-first-order fit of ln(C0/C) vs t
+analyte,k_app_1_per_min,half_life_min,r2,removal_120min_percent
+diclofenac,0.0191,36.4,0.989,89.0
+carbamazepine,0.0201,34.5,0.993,89.0
+sulfamethoxazole,0.0175,39.5,0.991,89.0
+ibuprofen,0.0190,36.5,0.988,89.0

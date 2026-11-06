@@ -1,0 +1,51 @@
+Kadi Lab Manager — CEET edition
+Copyright 2026 Centre for Energy and Environmental Technologies (CEET),
+VSB – Technical University of Ostrava
+
+Author and maintainer: Tomas Heryan, Data Steward & Open Science, CEET, VSB - Technical
+University of Ostrava, Ostrava, CZ (tomas.heryan@vsb.cz, https://orcid.org/0000-0003-2027-7149)
+
+Source repository: https://github.com/Tomas-Heryan/Kadi4Mat-e-Lab-Notebook
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+------------------------------------------------------------------------------
+Third-party software and derived work
+------------------------------------------------------------------------------
+
+Kadi4Mat (https://kadi.iam.kit.edu, https://gitlab.com/iam-cms/kadi)
+Copyright 2020 Karlsruhe Institute of Technology
+Licensed under the Apache License, Version 2.0.
+
+  * src/kadi_lab_manager/extras.py is a derivative work: a standalone port of
+    kadi/modules/records/extras.py (classes ExtraSchema, _ValidationSchema and
+    the helper functions _validate_extra_value, filter_extras, remove_extra_values,
+    extras_to_plain_json) from Kadi4Mat release 1.14.0. The validation rules and
+    several server messages are reproduced so that the port behaves exactly like
+    the server; Flask, SQLAlchemy and marshmallow dependencies were removed and
+    time-zone handling was added. See the header of that file for the list of
+    modifications.
+  * tests/mock_kadi.py reproduces the behaviour of the Kadi4Mat HTTP API v1
+    (status codes, response shapes, a few error messages) for offline testing. It
+    was written after studying the Kadi4Mat source code.
+  * docs/KADI4MAT-EXPORT-REFERENCE.md documents the export formats of Kadi4Mat
+    based on its source code and public documentation.
+
+kadi-apy (https://gitlab.com/iam-cms/kadi-apy)
+Copyright Karlsruhe Institute of Technology
+Licensed under the Apache License, Version 2.0.
+Used as a runtime dependency (not redistributed).
+
+The structure of the metadata templates in model/ (nested blocks, controlled
+option lists, units, required flags, composable sub-templates) was informed by the
+publicly shared template library of the Karlsruhe Nano Micro Facility (KNMFi) at
+KIT. No KNMFi template content is included in this repository.
+
+Kadi4Mat is a project of the Karlsruhe Institute of Technology. This repository is an
+independent tool for using Kadi4Mat at CEET, VSB-TUO; it is not affiliated with,
+maintained by, or endorsed by KIT.
+
+If you use Kadi4Mat in academic work, please cite:
+Brandt, N., Griem, L., Herrmann, C., Schoof, E., Tosato, G., Zhao, Y., Zschumme, P.,
+& Selzer, M. (2021). Kadi4Mat: A Research Data Infrastructure for Materials Science.
+Data Science Journal, 20(1), 8. https://doi.org/10.5334/dsj-2021-008

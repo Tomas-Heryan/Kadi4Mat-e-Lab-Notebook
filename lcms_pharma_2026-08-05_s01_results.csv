@@ -1,0 +1,14 @@
+# SYNTHETIC demo data - LC-MS/MS results, concentrations in ug/L
+sample_id,analyte,concentration_ug_L,loq_ug_L,qc_flag
+PHOTOCAT-R01-T000,diclofenac,1.836,0.05,ok
+PHOTOCAT-R01-T000,carbamazepine,0.920,0.05,ok
+PHOTOCAT-R01-T000,sulfamethoxazole,0.619,0.05,ok
+PHOTOCAT-R01-T000,ibuprofen,2.428,0.05,ok
+PHOTOCAT-R01-T060,diclofenac,0.712,0.05,ok
+PHOTOCAT-R01-T060,carbamazepine,0.427,0.05,ok
+PHOTOCAT-R01-T060,sulfamethoxazole,0.260,0.05,ok
+PHOTOCAT-R01-T060,ibuprofen,1.012,0.05,ok
+PHOTOCAT-R01-T120,diclofenac,0.206,0.05,ok
+PHOTOCAT-R01-T120,carbamazepine,0.104,0.05,ok
+PHOTOCAT-R01-T120,sulfamethoxazole,0.073,0.05,ok
+PHOTOCAT-R01-T120,ibuprofen,0.263,0.05,ok

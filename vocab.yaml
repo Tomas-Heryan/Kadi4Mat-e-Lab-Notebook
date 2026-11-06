@@ -1,0 +1,188 @@
+# Controlled vocabulary shared by every model file.
+#
+# * record_types : the Kadi "type" of a record and the identifier prefix it must use
+# * link_types   : the names used for record links, their ontology IRI (Kadi "term")
+#                  and which record types may stand on each side
+# * units        : spelling aliases -> canonical unit string (Kadi stores units as text,
+#                  and its metadata search matches units exactly, so one spelling only)
+# * unit_terms   : canonical unit -> QUDT IRI (documentation / RO-Crate enrichment)
+schema_version: 1
+
+vocab:
+  record_types:
+    project:            {prefix: proj-,  description: Project cover record (funding, people, areas); collections cannot carry metadata, this record can.}
+    instrument:         {prefix: inst-,  description: Measuring device that produces data (XRD, SEM, LC-MS/MS, power analyser, ...).}
+    equipment:          {prefix: eqp-,   description: Auxiliary laboratory equipment used in preparations and experiments (furnace, mill, reactor, SPE manifold, balance).}
+    material:           {prefix: mat-,   description: Chemical, reagent, precursor, reference material or consumable batch used as an input.}
+    sample:             {prefix: smpl-,  description: Physical sample or specimen, including derived samples (aliquots, calcined powders, extracts).}
+    sample-preparation: {prefix: prep-,  description: Activity that transforms samples or materials into prepared samples (extraction, calcination, milling, ...).}
+    experiment:         {prefix: exp-,   description: Measurement, test, characterisation or monitoring activity performed on an instrument.}
+    method:             {prefix: meth-,  description: Versioned protocol, SOP, analytical method or test procedure (a PROV plan).}
+    raw-data:           {prefix: raw-,   description: Primary data set produced by an experiment, with file-level integrity information.}
+    result:             {prefix: res-,   description: Evaluated / processed result derived from raw data.}
+
+  link_types:
+    # --- PROV-O core ------------------------------------------------------------------
+    used:
+      term: http://www.w3.org/ns/prov#used
+      description: An activity (experiment, preparation) used an entity (sample, material, equipment, instrument, method, data).
+      sources: [experiment, sample-preparation]
+      targets: [sample, material, equipment, instrument, method, raw-data, result]
+    was_generated_by:
+      term: http://www.w3.org/ns/prov#wasGeneratedBy
+      description: An entity (sample, data, result, material batch) was produced by an activity.
+      sources: [sample, raw-data, result, material]
+      targets: [experiment, sample-preparation]
+    was_derived_from:
+      term: http://www.w3.org/ns/prov#wasDerivedFrom
+      description: An entity was derived from another entity (aliquot from sample, result from raw data).
+      sources: [sample, raw-data, result, material]
+      targets: [sample, raw-data, result, material]
+    was_informed_by:
+      term: http://www.w3.org/ns/prov#wasInformedBy
+      description: An activity depended on an earlier activity (an experiment that followed a preparation).
+      sources: [experiment, sample-preparation]
+      targets: [experiment, sample-preparation]
+    follows_plan:
+      term: http://www.w3.org/ns/prov#hadPlan
+      description: An activity followed a method / protocol (PROV plan).
+      sources: [experiment, sample-preparation]
+      targets: [method]
+    measured_on:
+      term: https://schema.org/instrument
+      description: An experiment was carried out on an instrument (device).
+      sources: [experiment]
+      targets: [instrument]
+    # --- organisation -----------------------------------------------------------------
+    part_of_project:
+      term: https://schema.org/isPartOf
+      description: Any record belongs to a project (points to the project cover record).
+      sources: ["*"]
+      targets: [project]
+    supersedes:
+      term: http://purl.org/dc/terms/replaces
+      description: A newer method version replaces an older one.
+      sources: [method]
+      targets: [method]
+    calibrated_with:
+      term: http://www.w3.org/ns/prov#used
+      description: An instrument calibration experiment used a reference material.
+      sources: [experiment]
+      targets: [material]
+    documented_in:
+      term: https://schema.org/subjectOf
+      description: Device or equipment is documented in a method / manual record.
+      sources: [instrument, equipment]
+      targets: [method]
+
+  units:
+    degC: "°C"
+    "deg C": "°C"
+    "°c": "°C"
+    uL: "µL"
+    ul: "µL"
+    ug: "µg"
+    ug/L: "µg/L"
+    ug/l: "µg/L"
+    ug/m3: "µg/m³"
+    mg/l: "mg/L"
+    ng/l: "ng/L"
+    m3: "m³"
+    cm3: "cm³"
+    cm3/g: "cm³/g"
+    cm2: "cm²"
+    m2: "m²"
+    m2/g: "m²/g"
+    g/cm3: "g/cm³"
+    um: "µm"
+    uS/cm: "µS/cm"
+    W/m2: "W/m²"
+    mW/cm2: "mW/cm²"
+    mA/cm2: "mA/cm²"
+    mA/g: "mA/g"
+    mAh/g: "mAh/g"
+    hrs: h
+    hr: h
+    hours: h
+    minutes: min
+    mins: min
+    sec: s
+    seconds: s
+    RPM: rpm
+    pct: "%"
+    percent: "%"
+    Angstrom: "Å"
+    angstrom: "Å"
+    deg: "°"
+    degree: "°"
+    degrees: "°"
+    kv: kV
+    kwh: kWh
+    l/min: L/min
+    L/kg: L/kg
+    K/min: K/min
+    "°C/min": K/min
+
+  unit_terms:
+    "°C": http://qudt.org/vocab/unit/DEG_C
+    K: http://qudt.org/vocab/unit/K
+    s: http://qudt.org/vocab/unit/SEC
+    min: http://qudt.org/vocab/unit/MIN
+    h: http://qudt.org/vocab/unit/HR
+    d: http://qudt.org/vocab/unit/DAY
+    g: http://qudt.org/vocab/unit/GM
+    mg: http://qudt.org/vocab/unit/MilliGM
+    "µg": http://qudt.org/vocab/unit/MicroGM
+    kg: http://qudt.org/vocab/unit/KiloGM
+    L: http://qudt.org/vocab/unit/L
+    mL: http://qudt.org/vocab/unit/MilliL
+    "µL": http://qudt.org/vocab/unit/MicroL
+    "m³": http://qudt.org/vocab/unit/M3
+    "cm³": http://qudt.org/vocab/unit/CentiM3
+    mm: http://qudt.org/vocab/unit/MilliM
+    "µm": http://qudt.org/vocab/unit/MicroM
+    nm: http://qudt.org/vocab/unit/NanoM
+    "Å": http://qudt.org/vocab/unit/ANGSTROM
+    "m²": http://qudt.org/vocab/unit/M2
+    "m²/g": http://qudt.org/vocab/unit/M2-PER-GM
+    "g/cm³": http://qudt.org/vocab/unit/GM-PER-CentiM3
+    mg/L: http://qudt.org/vocab/unit/MilliGM-PER-L
+    "µg/L": http://qudt.org/vocab/unit/MicroGM-PER-L
+    ng/L: http://qudt.org/vocab/unit/NanoGM-PER-L
+    "µg/m³": http://qudt.org/vocab/unit/MicroGM-PER-M3
+    mol/L: http://qudt.org/vocab/unit/MOL-PER-L
+    "%": http://qudt.org/vocab/unit/PERCENT
+    V: http://qudt.org/vocab/unit/V
+    mV: http://qudt.org/vocab/unit/MilliV
+    kV: http://qudt.org/vocab/unit/KiloV
+    A: http://qudt.org/vocab/unit/A
+    mA: http://qudt.org/vocab/unit/MilliA
+    W: http://qudt.org/vocab/unit/W
+    kW: http://qudt.org/vocab/unit/KiloW
+    kWh: http://qudt.org/vocab/unit/KiloW-HR
+    Wh: http://qudt.org/vocab/unit/W-HR
+    Ah: http://qudt.org/vocab/unit/A-HR
+    Hz: http://qudt.org/vocab/unit/HZ
+    kHz: http://qudt.org/vocab/unit/KiloHZ
+    "Ω": http://qudt.org/vocab/unit/OHM
+    Pa: http://qudt.org/vocab/unit/PA
+    hPa: http://qudt.org/vocab/unit/HectoPA
+    kPa: http://qudt.org/vocab/unit/KiloPA
+    MPa: http://qudt.org/vocab/unit/MegaPA
+    GPa: http://qudt.org/vocab/unit/GigaPA
+    bar: http://qudt.org/vocab/unit/BAR
+    mbar: http://qudt.org/vocab/unit/MilliBAR
+    "W/m²": http://qudt.org/vocab/unit/W-PER-M2
+    "mW/cm²": http://qudt.org/vocab/unit/MilliW-PER-CentiM2
+    "µS/cm": http://qudt.org/vocab/unit/MicroS-PER-CentiM
+    mS/cm: http://qudt.org/vocab/unit/MilliS-PER-CentiM
+    rpm: http://qudt.org/vocab/unit/REV-PER-MIN
+    "°": http://qudt.org/vocab/unit/DEG
+    L/min: http://qudt.org/vocab/unit/L-PER-MIN
+    mL/min: http://qudt.org/vocab/unit/MilliL-PER-MIN
+    K/min: http://qudt.org/vocab/unit/K-PER-MIN
+    mm/min: http://qudt.org/vocab/unit/MilliM-PER-MIN
+    "mA/cm²": http://qudt.org/vocab/unit/MilliA-PER-CentiM2
+    mV/s: http://qudt.org/vocab/unit/MilliV-PER-SEC
+    eV: http://qudt.org/vocab/unit/EV
+    keV: http://qudt.org/vocab/unit/KiloEV

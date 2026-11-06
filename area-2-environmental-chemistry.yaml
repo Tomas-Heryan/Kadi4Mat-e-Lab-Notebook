@@ -1,0 +1,798 @@
+# Area 2 – Applied Chemistry in Waste Management, Water and Air Pollution
+schema_version: 1
+
+fieldsets:
+
+  water_field_parameters:
+    - key: field_parameters
+      type: dict
+      description: Parameters measured in the field or on receipt.
+      fields:
+        - key: ph
+          type: float
+          range: {min: 0, max: 14}
+          description: pH.
+          term: http://qudt.org/vocab/quantitykind/PH
+        - key: conductivity
+          type: float
+          unit: "µS/cm"
+          range: {min: 0}
+          description: Electrical conductivity (25 °C).
+        - key: temperature
+          type: float
+          unit: "°C"
+          description: Water temperature at sampling.
+          term: http://qudt.org/vocab/quantitykind/Temperature
+        - key: dissolved_oxygen
+          type: float
+          unit: mg/L
+          range: {min: 0}
+          description: Dissolved oxygen.
+        - key: turbidity
+          type: float
+          unit: NTU
+          range: {min: 0}
+          description: Turbidity.
+        - key: redox_potential
+          type: float
+          unit: mV
+          description: Oxidation-reduction potential (vs Ag/AgCl).
+        - key: flow_rate
+          type: float
+          unit: "m³/h"
+          description: Flow at the sampling point (plants, streams).
+
+  wastewater_context:
+    - key: wastewater
+      type: dict
+      description: Context of a wastewater sample.
+      fields:
+        - key: plant
+          type: str
+          description: Wastewater treatment plant / facility.
+        - key: treatment_stage
+          type: str
+          options: [raw influent, after primary treatment, activated sludge tank, secondary effluent, tertiary effluent, final effluent, sludge, return liquor, industrial pre-treatment, stormwater, other]
+          description: Sampling point within the treatment train.
+        - key: population_equivalent
+          type: int
+          range: {min: 0}
+          description: Design capacity of the plant (PE).
+        - key: weather
+          type: str
+          options: [dry weather, rain event, snowmelt, unknown]
+          description: Weather situation during sampling.
+
+  air_sampling:
+    - key: air_sampling
+      type: dict
+      description: Active or passive air / aerosol sampling.
+      fields:
+        - key: sampler
+          type: str
+          description: Sampler type and model (also an equipment `used` link).
+        - key: fraction
+          type: str
+          options: [TSP, PM10, PM2.5, PM1, gaseous phase, deposition, indoor air, stack emission]
+          description: Sampled fraction.
+        - key: flow_rate
+          type: float
+          unit: L/min
+          range: {min: 0}
+          description: Sampling flow rate.
+        - key: sampling_duration
+          type: float
+          unit: min
+          range: {min: 0}
+          description: Sampling duration.
+          term: http://qudt.org/vocab/quantitykind/Time
+        - key: sampled_volume
+          type: float
+          unit: "m³"
+          range: {min: 0}
+          description: Sampled air volume.
+          term: http://qudt.org/vocab/quantitykind/Volume
+        - key: volume_at_standard_conditions
+          type: bool
+          default: true
+          description: Volume normalised to 273.15 K and 101.325 kPa.
+        - key: filter
+          type: dict
+          description: Collection substrate.
+          fields:
+            - key: filter_type
+              type: str
+              options: [quartz fibre, glass fibre, PTFE, cellulose, polycarbonate, sorbent tube, impinger, none]
+              description: Filter / substrate type.
+            - key: filter_diameter
+              type: float
+              unit: mm
+              description: Filter diameter.
+            - key: filter_id
+              type: str
+              description: Filter identification number.
+            - key: conditioning
+              type: str
+              description: Pre- and post-weighing conditioning (T, RH, time).
+            - key: mass_loading
+              type: float
+              unit: mg
+              description: Collected particulate mass.
+        - key: meteorology
+          type: dict
+          description: Meteorological conditions during sampling.
+          fields:
+            - key: temperature
+              type: float
+              unit: "°C"
+              description: Air temperature.
+              term: http://qudt.org/vocab/quantitykind/Temperature
+            - key: relative_humidity
+              type: float
+              unit: "%"
+              range: {min: 0, max: 100}
+              description: Relative humidity.
+            - key: pressure
+              type: float
+              unit: hPa
+              description: Atmospheric pressure.
+            - key: wind_speed
+              type: float
+              unit: m/s
+              description: Wind speed.
+            - key: wind_direction
+              type: float
+              unit: "°"
+              range: {min: 0, max: 360}
+              description: Wind direction.
+
+  waste_leaching_test:
+    - key: leaching_test
+      type: dict
+      description: Leaching / eluate preparation of a waste or soil sample.
+      fields:
+        - key: standard
+          type: str
+          required: true
+          options: [EN 12457-1 (L/S 2), EN 12457-2 (L/S 10), EN 12457-4 (L/S 10, 10 mm), EN 12457-3 (two stage), CEN/TS 14405 (column), EN 14429 (pH dependence), US EPA 1311 TCLP, other]
+          description: Leaching standard.
+        - key: liquid_to_solid_ratio
+          type: float
+          unit: L/kg
+          range: {min: 0}
+          description: Liquid-to-solid ratio.
+        - key: particle_size_max
+          type: float
+          unit: mm
+          description: Maximum particle size after crushing.
+        - key: dry_matter
+          type: float
+          unit: "%"
+          range: {min: 0, max: 100}
+          description: Dry matter content of the sample.
+        - key: leachant
+          type: str
+          default: deionised water
+          description: Leachant used.
+        - key: contact_time
+          type: float
+          unit: h
+          range: {min: 0}
+          description: Contact time.
+          term: http://qudt.org/vocab/quantitykind/Time
+        - key: agitation
+          type: str
+          options: [end-over-end tumbler, roller table, orbital shaker, column flow, none]
+          description: Agitation method.
+        - key: eluate
+          type: dict
+          description: Eluate characteristics.
+          fields:
+            - key: volume
+              type: float
+              unit: L
+              description: Eluate volume obtained.
+            - key: ph
+              type: float
+              range: {min: 0, max: 14}
+              description: Eluate pH.
+              term: http://qudt.org/vocab/quantitykind/PH
+            - key: conductivity
+              type: float
+              unit: "µS/cm"
+              description: Eluate conductivity.
+            - key: filtration
+              type: str
+              default: 0.45 µm membrane
+              description: Filtration applied to the eluate.
+            - key: preservation
+              type: str
+              description: Preservation of the eluate (acidification, cooling).
+        - key: analytes
+          type: list
+          description: Analytes to be determined in the eluate.
+          items:
+            - type: str
+
+  spe_extraction:
+    - key: spe
+      type: dict
+      description: Solid-phase extraction details.
+      fields:
+        - key: sorbent
+          type: dict
+          description: SPE sorbent / cartridge.
+          fields:
+            - key: sorbent_type
+              type: str
+              options: [HLB (hydrophilic-lipophilic balanced), C18, MCX, MAX, WCX, WAX, Strata-X, silica, Florisil, carbon, mixed-mode, other]
+              description: Sorbent type.
+            - key: product
+              type: str
+              description: Cartridge product name (e.g. Oasis HLB 6 cc).
+            - key: sorbent_mass
+              type: float
+              unit: mg
+              description: Sorbent mass.
+            - key: lot_number
+              type: str
+              description: Cartridge lot number.
+        - key: sample_volume
+          type: float
+          unit: mL
+          range: {min: 0}
+          description: Sample volume loaded.
+          term: http://qudt.org/vocab/quantitykind/Volume
+        - key: sample_ph
+          type: float
+          range: {min: 0, max: 14}
+          description: pH of the sample at loading.
+          term: http://qudt.org/vocab/quantitykind/PH
+        - key: internal_standard_spike
+          type: str
+          description: Internal / surrogate standards spiked and amounts.
+        - key: conditioning
+          type: str
+          description: Conditioning solvents and volumes.
+        - key: loading_flow
+          type: float
+          unit: mL/min
+          description: Loading flow rate.
+        - key: washing
+          type: str
+          description: Washing step.
+        - key: drying
+          type: str
+          description: Drying of the cartridge (gas, time).
+        - key: elution_steps
+          type: list
+          description: Elution steps in order.
+          items:
+            - type: dict
+              fields:
+                - key: solvent
+                  type: str
+                  required: true
+                  description: Elution solvent.
+                - key: volume
+                  type: float
+                  unit: mL
+                  description: Volume.
+        - key: evaporation
+          type: dict
+          description: Evaporation of the eluate.
+          fields:
+            - key: method
+              type: str
+              options: [nitrogen stream, rotary evaporator, vacuum centrifuge, none]
+              description: Evaporation method.
+            - key: temperature
+              type: float
+              unit: "°C"
+              description: Bath temperature.
+        - key: reconstitution
+          type: dict
+          description: Reconstitution of the dry extract.
+          fields:
+            - key: solvent
+              type: str
+              description: Reconstitution solvent.
+            - key: volume
+              type: float
+              unit: "µL"
+              description: Final volume.
+
+  chromatography_ms:
+    - key: chromatography
+      type: dict
+      description: Chromatographic separation and detection.
+      fields:
+        - key: technique
+          type: str
+          required: true
+          options: [LC-MS/MS, LC-HRMS, LC-UV/DAD, GC-MS, GC-MS/MS, GC-FID, GC-ECD, IC, HPLC-FLD]
+          description: Chromatographic technique.
+        - key: column
+          type: dict
+          description: Analytical column.
+          fields:
+            - key: name
+              type: str
+              description: Column name / stationary phase.
+            - key: dimensions
+              type: str
+              description: Dimensions (e.g. 100 × 2.1 mm; 30 m × 0.25 mm).
+            - key: particle_or_film
+              type: float
+              unit: "µm"
+              description: Particle size (LC) or film thickness (GC).
+            - key: temperature
+              type: float
+              unit: "°C"
+              description: Column oven temperature (LC) or initial temperature (GC).
+              term: http://qudt.org/vocab/quantitykind/Temperature
+            - key: serial_number
+              type: str
+              description: Column serial number.
+        - key: mobile_phase
+          type: dict
+          description: Mobile phase / carrier gas.
+          fields:
+            - key: phase_a
+              type: str
+              description: Mobile phase A (LC) or carrier gas (GC).
+            - key: phase_b
+              type: str
+              description: Mobile phase B.
+            - key: gradient_program
+              type: str
+              description: Gradient / temperature programme as text.
+            - key: flow_rate
+              type: float
+              unit: mL/min
+              description: Flow rate.
+        - key: injection_volume
+          type: float
+          unit: "µL"
+          description: Injection volume.
+          term: http://qudt.org/vocab/quantitykind/Volume
+        - key: ionisation
+          type: str
+          options: [ESI positive, ESI negative, ESI polarity switching, APCI, EI, NCI, not applicable]
+          description: Ionisation mode.
+        - key: acquisition_mode
+          type: str
+          options: [MRM / SRM, full scan, SIM, DDA, DIA, PRM, not applicable]
+          description: MS acquisition mode.
+        - key: calibration
+          type: dict
+          description: Calibration of the sequence.
+          fields:
+            - key: levels
+              type: int
+              range: {min: 1}
+              description: Number of calibration levels.
+            - key: range
+              type: str
+              description: Calibration range as text with unit.
+            - key: internal_standards
+              type: list
+              description: Internal standards used.
+              items:
+                - type: str
+            - key: r2_min
+              type: float
+              range: {min: 0, max: 1}
+              description: Lowest coefficient of determination among analytes.
+        - key: sequence_composition
+          type: dict
+          description: Composition of the analytical sequence.
+          fields:
+            - key: samples
+              type: int
+              range: {min: 0}
+              description: Number of real samples.
+            - key: blanks
+              type: int
+              range: {min: 0}
+              description: Number of blanks.
+            - key: qc_samples
+              type: int
+              range: {min: 0}
+              description: Number of QC samples.
+        - key: analytes
+          type: list
+          description: Target analytes.
+          items:
+            - type: str
+
+  icp_analysis:
+    - key: icp
+      type: dict
+      description: Elemental analysis by ICP / AAS.
+      fields:
+        - key: technique
+          type: str
+          required: true
+          options: [ICP-MS, ICP-MS/MS, ICP-OES, AAS flame, AAS graphite furnace, XRF]
+          description: Elemental technique.
+        - key: digestion_method
+          type: str
+          description: Digestion / preparation reference (e.g. EN 13657, EPA 3051A).
+        - key: elements
+          type: list
+          description: Elements / isotopes determined.
+          items:
+            - type: str
+        - key: internal_standards
+          type: list
+          description: Internal standards.
+          items:
+            - type: str
+        - key: collision_reaction_gas
+          type: str
+          options: [none, He KED, H2, O2 mass shift, NH3, other]
+          description: Collision / reaction cell mode.
+        - key: dilution_factor
+          type: float
+          range: {min: 1}
+          description: Dilution factor applied to the digest / sample.
+        - key: calibration_range
+          type: str
+          description: Calibration range as text with unit.
+        - key: certified_reference_material
+          type: str
+          description: CRM analysed for QC (also a `calibrated_with` link).
+
+  batch_treatment_test:
+    - key: treatment_test
+      type: dict
+      description: Batch water / wastewater treatment test.
+      fields:
+        - key: process
+          type: str
+          required: true
+          options: [adsorption, photocatalysis, ozonation, UV/H2O2, Fenton / photo-Fenton, electrochemical oxidation, coagulation-flocculation, membrane filtration, ion exchange, biological, other]
+          description: Treatment process.
+        - key: reactor_volume
+          type: float
+          unit: L
+          range: {min: 0}
+          description: Working volume of the reactor.
+          term: http://qudt.org/vocab/quantitykind/Volume
+        - key: water_matrix
+          type: str
+          options: [deionised water, tap water, synthetic wastewater, real wastewater effluent, real wastewater influent, surface water, landfill leachate, other]
+          description: Water matrix treated.
+        - key: dosage
+          type: float
+          unit: g/L
+          range: {min: 0}
+          description: Dosage of the treatment agent (catalyst, adsorbent, coagulant).
+        - key: contact_time
+          type: float
+          unit: min
+          range: {min: 0}
+          description: Total contact / reaction time.
+          term: http://qudt.org/vocab/quantitykind/Time
+        - key: ph_initial
+          type: float
+          range: {min: 0, max: 14}
+          description: Initial pH.
+          term: http://qudt.org/vocab/quantitykind/PH
+        - key: temperature
+          type: float
+          unit: "°C"
+          description: Reaction temperature.
+          term: http://qudt.org/vocab/quantitykind/Temperature
+        - key: stirring_speed
+          type: int
+          unit: rpm
+          description: Stirring speed.
+        - key: sampling_times
+          type: list
+          description: Times at which aliquots were taken (minutes from start).
+          items:
+            - type: float
+              unit: min
+        - key: target_pollutants
+          type: list
+          description: Pollutants followed.
+          items:
+            - type: str
+        - key: initial_concentration
+          type: float
+          unit: mg/L
+          description: Initial concentration of the main target pollutant.
+        - key: removal_efficiency
+          type: float
+          unit: "%"
+          range: {min: -100, max: 100}
+          description: Removal of the main target pollutant at the end of the test.
+
+templates:
+
+  # ------------------------------------------------------------------ samples
+  - identifier: tmpl-sample-water
+    kind: record
+    title: Sample – water / wastewater
+    description: Environmental water sample with field parameters and treatment-plant context.
+    record:
+      type: sample
+      title: "<sample id> – <matrix> (<site>)"
+      tags: [sample, water, area-2]
+      collections: [area-2-environmental-chemistry]
+    fields:
+      - key: sample_id
+        type: str
+        required: true
+        description: Laboratory sample code.
+        term: https://schema.org/identifier
+      - key: sample_class
+        type: str
+        required: true
+        default: environmental – water
+        options: [environmental – water, waste / leachate]
+        description: Class of the sample.
+      - key: matrix
+        type: str
+        required: true
+        options: [wastewater influent, wastewater effluent, surface water, groundwater, drinking water, rainwater / stormwater, landfill leachate, process water, eluate, other]
+        description: Water matrix.
+        term: http://purl.obolibrary.org/obo/ENVO_00002006
+      - key: volume
+        type: float
+        unit: mL
+        range: {min: 0}
+        description: Volume received.
+      - key: origin
+        type: dict
+        description: Sampling site.
+        use: geo_origin
+      - use: wastewater_context
+      - key: sampling
+        type: dict
+        description: Sampling details.
+        fields:
+          - key: sampled_at
+            type: date
+            required: true
+            description: Date and time of sampling (end of composite period).
+          - key: sampled_by
+            type: str
+            description: Person / organisation.
+          - key: sampling_method
+            type: str
+            options: [grab, 24 h time-proportional composite, 24 h flow-proportional composite, passive sampler, other]
+            description: Sampling method.
+          - key: sampling_standard
+            type: str
+            default: CSN ISO 5667-10
+            description: Standard followed.
+          - key: container
+            type: str
+            description: Container type and volume.
+          - key: preservation
+            type: str
+            description: Preservation applied.
+      - use: water_field_parameters
+      - key: storage
+        type: dict
+        description: Storage.
+        fields:
+          - key: location
+            type: str
+            description: Storage location.
+          - key: temperature
+            type: float
+            unit: "°C"
+            default: 4
+            description: Storage temperature.
+          - key: conditions
+            type: str
+            default: cooled
+            options: [ambient, cooled, frozen, dark, other]
+            description: Storage conditions.
+          - key: retention_until
+            type: date
+            description: Keep at least until this date.
+      - key: parent_sample
+        type: str
+        description: Parent sample identifier for aliquots.
+      - key: lifecycle_status
+        type: str
+        required: true
+        default: received
+        options: [planned, received, in preparation, prepared, under measurement, measured, archived, consumed, disposed]
+        description: Lifecycle status.
+      - key: notes
+        type: str
+        description: Any remarks.
+
+  - identifier: tmpl-sample-air-filter
+    kind: record
+    title: Sample – air / aerosol filter
+    description: Particulate matter or gaseous-phase sample collected on a filter or sorbent.
+    record:
+      type: sample
+      title: "<sample id> – <fraction> filter (<site>)"
+      tags: [sample, air, area-2]
+      collections: [area-2-environmental-chemistry]
+    fields:
+      - key: sample_id
+        type: str
+        required: true
+        description: Laboratory sample code.
+        term: https://schema.org/identifier
+      - key: sample_class
+        type: str
+        required: true
+        default: environmental – air / aerosol
+        options: [environmental – air / aerosol]
+        description: Class of the sample.
+      - key: matrix
+        type: str
+        required: true
+        default: airborne particulate matter on filter
+        description: Matrix.
+      - key: origin
+        type: dict
+        description: Sampling site.
+        use: geo_origin
+      - use: air_sampling
+      - key: sampling_period
+        type: dict
+        description: Sampling period.
+        fields:
+          - key: start
+            type: date
+            required: true
+            description: Start of sampling.
+          - key: end
+            type: date
+            description: End of sampling.
+      - key: storage
+        type: dict
+        description: Storage of the filter.
+        fields:
+          - key: location
+            type: str
+            description: Storage location.
+          - key: conditions
+            type: str
+            default: frozen
+            options: [ambient, cooled, frozen, desiccator, other]
+            description: Storage conditions.
+      - key: lifecycle_status
+        type: str
+        required: true
+        default: received
+        options: [planned, received, in preparation, prepared, under measurement, measured, archived, consumed, disposed]
+        description: Lifecycle status.
+      - key: notes
+        type: str
+        description: Any remarks.
+
+  # ------------------------------------------------------------------ preparations
+  - identifier: tmpl-prep-spe-extraction
+    kind: record
+    title: Sample preparation – solid-phase extraction
+    description: SPE enrichment of organic micropollutants from water samples.
+    record:
+      type: sample-preparation
+      title: "SPE extraction of <sample id> for <method>"
+      tags: [sample-preparation, spe, area-2]
+      collections: [area-2-environmental-chemistry]
+    fields:
+      - use: sample_preparation_core
+      - use: spe_extraction
+
+  - identifier: tmpl-prep-leaching-test
+    kind: record
+    title: Sample preparation – leaching test (eluate)
+    description: Preparation of an eluate from waste / soil according to EN 12457 or related standards.
+    record:
+      type: sample-preparation
+      title: "Leaching test <standard> – <sample id>"
+      tags: [sample-preparation, leaching, waste, area-2]
+      collections: [area-2-environmental-chemistry]
+    fields:
+      - use: sample_preparation_core
+      - use: waste_leaching_test
+
+  # ------------------------------------------------------------------ experiments
+  - identifier: tmpl-exp-chromatography-ms
+    kind: record
+    title: Experiment – chromatography (LC/GC) with MS or other detection
+    description: Analytical sequence on an LC-MS/MS, GC-MS, GC-FID or IC instrument.
+    record:
+      type: experiment
+      title: "<technique> sequence – <sequence name> – <date>"
+      tags: [experiment, chromatography, area-2]
+      collections: [area-2-environmental-chemistry]
+    fields:
+      - use: experiment_core
+      - use: chromatography_ms
+
+  - identifier: tmpl-exp-icp-elemental
+    kind: record
+    title: Experiment – elemental analysis (ICP-MS / ICP-OES / AAS)
+    description: Elemental determination in digests, eluates or waters.
+    record:
+      type: experiment
+      title: "<technique> – <sequence name> – <date>"
+      tags: [experiment, elemental-analysis, area-2]
+      collections: [area-2-environmental-chemistry]
+    fields:
+      - use: experiment_core
+      - use: icp_analysis
+
+  - identifier: tmpl-exp-batch-treatment-test
+    kind: record
+    title: Experiment – batch water treatment test
+    description: Adsorption, oxidation, coagulation or similar batch treatment test with sampling over time.
+    record:
+      type: experiment
+      title: "<process> treatment test – <run> – <date>"
+      tags: [experiment, water-treatment, area-2]
+      collections: [area-2-environmental-chemistry]
+    fields:
+      - use: experiment_core
+      - use: batch_treatment_test
+
+  # ------------------------------------------------------------------ extras templates
+  - identifier: xtr-water-field-parameters
+    kind: extras
+    title: Block – water field parameters
+    description: pH, conductivity, temperature, oxygen, turbidity, redox, flow.
+    fields:
+      - use: water_field_parameters
+
+  - identifier: xtr-wastewater-context
+    kind: extras
+    title: Block – wastewater context
+    description: Plant, treatment stage, capacity and weather.
+    fields:
+      - use: wastewater_context
+
+  - identifier: xtr-air-sampling
+    kind: extras
+    title: Block – air / aerosol sampling
+    description: Sampler, fraction, flow, volume, filter and meteorology.
+    fields:
+      - use: air_sampling
+
+  - identifier: xtr-waste-leaching-test
+    kind: extras
+    title: Block – leaching test
+    description: EN 12457 and related leaching test parameters and eluate characteristics.
+    fields:
+      - use: waste_leaching_test
+
+  - identifier: xtr-spe-extraction
+    kind: extras
+    title: Block – solid-phase extraction
+    description: Sorbent, loading, washing, elution, evaporation and reconstitution.
+    fields:
+      - use: spe_extraction
+
+  - identifier: xtr-chromatography-ms
+    kind: extras
+    title: Block – chromatography with MS detection
+    description: Column, mobile phase, injection, ionisation, acquisition, calibration, sequence composition.
+    fields:
+      - use: chromatography_ms
+
+  - identifier: xtr-icp-analysis
+    kind: extras
+    title: Block – ICP / AAS elemental analysis
+    description: Digestion, elements, internal standards, cell gas, dilution, CRM.
+    fields:
+      - use: icp_analysis
+
+  - identifier: xtr-batch-treatment-test
+    kind: extras
+    title: Block – batch water treatment test
+    description: Process, reactor, dosage, contact time, sampling times, removal.
+    fields:
+      - use: batch_treatment_test

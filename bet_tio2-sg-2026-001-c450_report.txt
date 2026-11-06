@@ -1,0 +1,8 @@
+SYNTHETIC demo data - gas physisorption report
+Instrument: Micromeritics 3Flex   Adsorptive: N2 at 77 K
+Sample: TIO2-SG-2026-001-C450     Mass after degassing: 112.4 mg
+Degassing: 200 degC, 6 h, vacuum
+BET surface area: 58.3 m2/g  (p/p0 0.05-0.30, C = 112)
+Total pore volume (p/p0 = 0.99): 0.214 cm3/g
+BJH desorption mean pore diameter: 11.6 nm
+Isotherm type: IV(a), H2(b) hysteresis
