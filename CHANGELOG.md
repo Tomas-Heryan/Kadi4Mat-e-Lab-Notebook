@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+* Windows launcher `Kadi4Mat_Windows-1.6.cmd` with documentation
+  `WINDOWS-LAUNCHER.md`: one file that downloads release `v1.0.1`, installs and
+  verifies the tool, asks for the access token, and deploys the demo. Every deployment gets a
+  timestamp (`YYYYMMDDHHMM`) at the end of all identifiers. The package itself is unchanged.
+* `.gitattributes`: `*.cmd -text` keeps the CRLF line endings of batch files.
+* `.gitignore`: timestamped model copies written by the launcher.
+
 ## 1.0.1 — 2026-11-06
 
 * Demo metadata anonymised for publication: project acronym → placeholder `PROJECT`
