@@ -15,6 +15,8 @@ reports/
 snapshots/
 exports/
 build/
+# timestamped model copies written by the Windows launcher (one per deployment)
+model/*-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9].yaml
 
 # imported copies and downloaded files
 files/
