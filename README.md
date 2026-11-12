@@ -240,5 +240,7 @@ src/kadi_lab_manager/   extras.py (server rules), model.py (YAML), compile.py (p
 model/                  the CEET model (see above)
 tests/                  mock_kadi.py, test_kadi_lab_manager.py, fixtures/
 docs/                   MODEL-FORMAT.md, CONVENTIONS.md, KADI4MAT-EXPORT-REFERENCE.md
+windows/                Kadi4Mat_Windows-1.6.cmd (one-file installer and demo deployment for
+                        Windows), WINDOWS-LAUNCHER.md (its documentation)
 LICENSE, NOTICE, CITATION.cff
 ```
