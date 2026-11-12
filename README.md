@@ -27,8 +27,20 @@ Kadi4Mat is developed by the Karlsruhe Institute of Technology (KIT); this repos
 independent tool for using it at CEET and is not affiliated with or endorsed by KIT. See
 *License, attribution and citation* below.
 
+
 ## Quick start (Windows, PowerShell, VS Code)
 
+**One-file launcher.** On Windows the whole procedure — download of release `v1.0.1`, virtual
+environment, installation, checks, access token, `doctor`, `plan` and `apply` of the demo —
+can be run with a single script. Open
+[`Kadi4Mat_Windows-1.6.cmd`](Kadi4Mat_Windows-1.6.cmd), choose *Download raw
+file*, unblock the downloaded file (*Properties → Unblock*) and double-click it. The script
+asks for the access token and for confirmation before anything is written to the server.
+Deployments made with it get a timestamp at the end of all identifiers instead of the suffix
+`-demo`. Details: [`WINDOWS-LAUNCHER.md`](WINDOWS-LAUNCHER.md).
+
+
+The same steps by hand:
 ```powershell
 cd C:\path\to\kadi_lab_manager_ceet
 py -3 -m venv .venv
